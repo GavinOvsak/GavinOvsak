@@ -1,16 +1,114 @@
 <html>
 <head>
-  <title>Gavin Ovsak</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script>
-    $(function() {
-      $.getJSON('http://localhost:1002/gavinovsak/get', function(data) {
-        console.log(data);
-      })
-    })    
-  </script>
+<title>Family Dashboard</title>
+
+<script src="./res/js/jquery-2.2.4.js"></script>
+<script src="./res/js/popper.min.js"></script>
+<script src="./res/js/bootstrap.min.js"></script>
+<script src="./res/js/lodash.min.js"></script>
+<script src="./res/js/jsonpg.js"></script>
+
+<link rel="stylesheet" href="./res/css/bootstrap.min.css">
+<link rel="stylesheet" href="./res/css/jquery-ui.css">
+<link rel="stylesheet" href="./res/css/font-awesome.css">
+<link rel="preload" href="./res/css/fontawesome-webfont.woff" as="font" type="font/woff">
+
+<style>
+  .flexRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .webCard {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    min-height: 100px;
+
+    border-radius: 5px;
+    padding: 5px;
+    color: white;
+    margin-top: 10px;
+
+    flex: 1;
+  }
+
+  .list {
+    margin-left: 10px;
+  }
+
+</style>
+<script>
+  jsonpg.setKey('gavinovsak');
+
+  $(function() {
+
+    jsonpg.watch({ path: 'gavinovsak.family', frequency: 2000}, function(data) {
+      console.log('got data', data);
+      if (data == null) return;
+
+      if (data.quoteOfWeek != null) {
+        $('#quoteOfWeek').text(data.quoteOfWeek);
+      }
+
+      if (data.moviesToWatch != null) {
+        var list = $('#moviesToWatch').find('.list');
+
+        list.empty();
+        data.moviesToWatch.map(function(item) {
+          list.append($('<div><h6>'+item+'</h6></div>'));
+        })
+      }
+      if (data.dinnerOptions != null) {
+        var list = $('#dinnerOptions').find('.list');
+
+        list.empty();
+        data.dinnerOptions.map(function(item) {
+          list.append($('<div><h6>'+item+'</h6></div>'));
+        })
+      }
+      if (data.groupTodos != null) {
+        var list = $('#groupTodos').find('.list');
+
+        list.empty();
+        data.groupTodos.map(function(item) {
+          list.append($('<div><h6>'+item+'</h6></div>'));
+        })
+      }
+
+    });
+  });
+
+</script>
+
 </head>
-<body>
-  <h4>HELLO WORLD</h4>
+<body style="padding: 20px;">
+  <div>
+    <h4 style="display: inline-block;">Family Dashboard</h4>
+    <a href="http://jsonpg.herokuapp.com/gavinovsak?path=family" target="_blank">
+      <h5 style="display:inline-block;margin-left: 10px;">
+        Update<i class="icon-arrow-right" style="margin-left: 5px;"></i>
+      </h5>
+    </a>
+    <br>
+    <h5>Quote of the Week: <span id="quoteOfWeek" style="font-style: italic;"></span></h5>
+  </div>
+  <div class="flexRow">
+    <div id="moviesToWatch" class="webCard" style="background-color: lightcoral">
+      <h5>Movies to Watch</h5>
+      <div class="list"></div>
+    </div>
+    <div id="dinnerOptions" class="webCard" style="background-color: lightseagreen">
+      <h5>Dinner Options</h5>
+      <div class="list"></div>
+    </div>
+    <div id="groupTodos" class="webCard" style="background-color: lightsalmon">
+      <h5>Group Todos</h5>
+      <div class="list"></div>
+    </div>
+  </div>
 </body>
 </html>
