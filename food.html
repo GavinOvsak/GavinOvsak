@@ -26,13 +26,12 @@
 
 <style>
   .tab {
-    margin-right: 10px;
     margin-bottom: 10px;
     margin-top: 10px;
-    flex: 1;
     text-align: center;
     max-width: 120px;
     cursor: pointer;
+    display: inline-block;
   }
 
   .tabText {
@@ -1251,7 +1250,8 @@
     var tab = 'food'; //food, meals, grocery
     var mealType = 'all';
     var day = 1000 * 60 * 60 * 24;
-    var query = '';
+    var foodQuery = '';
+    var mealQuery = '';
     var groceryMode = 'buy'; // buy / goals
 
     var foodId = null;
@@ -1571,7 +1571,8 @@
       $('.tabText').removeClass('custom-underline');
       $('.tab[data-tab="'+tab+'"]').find('.tabText').addClass('custom-underline');
 
-      query = $('#filter').val();
+      foodQuery = $('#foodFilter').val();
+      mealQuery = $('#mealFilter').val();
 
       var mealData = keys(meals).map(function(mId) {
         return { label: meals[mId].name, value: mId };
@@ -1594,17 +1595,10 @@
         }));
       }
 
-      $('#foodSection').toggle(tab == 'food');
-      $('#mealSection').toggle(tab == 'meals');
+      $('#foodSection, #foodFilter').css('display', tab == 'food' ? 'inline-block' : 'none');
+      $('#mealSection, #mealFilter').css('display', tab == 'meals' ? 'inline-block' : 'none');
       $('#grocerySection').toggle(tab == 'grocery');
-      if (tab == 'food') {
-        $('#filter').css('width', 'calc(100% - 80px)')
-      } else if (tab == 'meals') {
-        $('#filter').css('width', 'calc(100% - 215px)')
-      } else {
-        $('#filter').css('width', '100%')
-      }
-      $('#filter, #newItem').css('display', tab != 'grocery' ? 'inline-block' : 'none');
+      $('#newItem').css('display', tab != 'grocery' ? 'inline-block' : 'none');
       $('#mealType').css('display', tab == 'meals' ? 'inline-block' : 'none');
 
       $('#groceryList, #addGrocerySection').toggle(groceryMode == 'buy')
@@ -1614,8 +1608,8 @@
 
         $('#foodList').empty();
         var foodList = _.values(food).filter(function(item) {
-          if (query.trim().length == 0) return true;
-          return item.name.toLowerCase().indexOf(query.toLowerCase()) >= 0;
+          if (foodQuery.trim().length == 0) return true;
+          return item.name.toLowerCase().indexOf(foodQuery.toLowerCase()) >= 0;
         });
         foodList = _.sortBy(foodList, function(item) {
           if (item.items.length == 0) return 1e7; // Put at bottom of list
@@ -1638,22 +1632,22 @@
               if (item.expireDays != null || (item.expireDaysAfterOpen != null && subItem.opened != null)) {
                 if (daysToExpire > 0) {
                   // Math.round(item.expireDays - daysSinceBought)
-                  expireNote = '<h6 style="display: inline-block; color: grey; margin-right: 5px;">(bad in '+daysToExpire+' days)</h6>'
+                  expireNote = '<h6 style="display: inline-block; color: grey; margin-right: 2px;">(bad in '+daysToExpire+' days)</h6>'
                 } else {
                   var expireDate = new Date(Date.now() + daysToExpire * day);
-                  expireNote = '<h6 style="display: inline-block; color: #e60606; margin-right: 5px;">(went bad on ' + (expireDate.getMonth()+1)+'/'+(expireDate.getDate()) + ')</h6>'
+                  expireNote = '<h6 style="display: inline-block; color: #e60606; margin-right: 2px;">(went bad on ' + (expireDate.getMonth()+1)+'/'+(expireDate.getDate()) + ')</h6>'
                 }
               }
 
               return ''+
               '<div class="itemRow" data-subIndex="'+sub_i+'">'+
-              '  <input class="form-control amtInput subItemAmt" style="" value="'+subItem.amount+'" type="number">'+
-              '<h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from '+dateInput(item.id, sub_i, 'bought')+'</h6>'+
+              '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;margin-right: 5px;" value="'+subItem.amount+'" type="number">'+
+              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 80px); margin-top: 0px;"><h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from '+dateInput(item.id, sub_i, 'bought')+'</h6>'+
               (subItem.opened != null ? 
               '<h6 style="display: inline-block;margin-left: 0px;"> opened '+dateInput(item.id, sub_i, 'opened')+'</h6>' : '')+
               (expireNote != null ? expireNote : '')+
-              '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span>'+
-              ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;margin-top: 8px;padding-bottom: 2px;padding-top: 2px; margin-left: 10px;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
+              ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;margin-top: 5px;padding-bottom: 2px;padding-top: 2px; margin-right: 5px;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
+              '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span></span>'+
               '</div>';
             }).join('')+
             '  </div>'+
@@ -1771,8 +1765,8 @@
         $('#mealList').empty();
         _.orderBy(mealList.filter(function(item) {
           // Query filter
-          if (query.trim().length == 0) return true;
-          return item.name.toLowerCase().indexOf(query.toLowerCase()) >= 0;
+          if (mealQuery.trim().length == 0) return true;
+          return item.name.toLowerCase().indexOf(mealQuery.toLowerCase()) >= 0;
         }).filter(function(item) {
           // Type filter
           if (mealType == 'all') return true;
@@ -1825,10 +1819,10 @@
           $('#goalList').append($(''+
             '<div data-id="'+item.id+'" class="goalRow">'+
             '  <input class="form-control amtInput goalInput" style="vertical-align: top; margin-right: 5px;" value="'+item.stock+'" type="number">'+
-            '  <span style="width: calc(100% - 80px); display: inline-block; margin-bottom: 10px;">'+
-              '  <h6 style="display: inline;margin-bottom: 0px;vertical-align: top;margin-top: 4px;">'+item.name+'</h6>'+
-              '  <span class="icon-pencil mealEdit" style="margin-left: 7px; display: inline-block;"></span>'+
-              '  <span class="icon-remove goalRemove" style="margin-left: 7px; display: inline-block;"></span>'+
+            '  <span style="width: calc(100% - 80px); display: inline-block; margin-bottom: 10px; margin-top: 4px; line-height: 25px;">'+
+              '  <h6 style="display: inline;margin-bottom: 0px;margin-top: 4px;">'+item.name+'</h6>'+
+              '  <span class="icon-pencil mealEdit" style="margin-left: 7px; display: inline;"></span>'+
+              '  <span class="icon-remove goalRemove" style="margin-left: 7px; display: inline;"></span>'+
             '  </span>'+
             '</div>'));
 
@@ -1896,7 +1890,7 @@
 
             text += '<span class="icon-pencil foodEdit" style="margin-left: 10px;"></span>';
 
-            $('#groceryList').append($('<h6 data-id="'+fId+'" data-store="'+store+'">'+text+'</h6>')); 
+            $('#groceryList').append($('<h6 data-id="'+fId+'" data-store="'+store+'" style="line-height: 35px;">'+text+'</h6>')); 
           }
 
           for (var fId in groceryCart[store]) {
@@ -2013,6 +2007,9 @@
 
     jsonpg.setKey('gavinovsak', 'QaMtKn7p9yDuctl');
 
+    var mealFilterCallback = null;
+    var foodFilterCallback = null;
+
     $(function() {
       refresh();
 
@@ -2020,18 +2017,27 @@
         console.log('got data', data);
         if (data == null) return;
 
+        var foodDiff = isDiff(food, data.food);
+        var mealDiff = isDiff(meals, data.meals);
         food = data.food || {};
         meals = data.meals || {};
-        refresh();
+        if (foodDiff || mealDiff) refresh();
 
         // jsonpg.set('gavinovsak.food.food.f5', null, function(data) {
         //   console.log('callback', data)
         // })
       });
 
-      $('#filter').unbind('input').on('input', function() {
-        query = $(this).val();
-        refresh();
+      $('#mealFilter').unbind('input').on('input', function() {
+        mealQuery = $(this).val();
+        clearTimeout(mealFilterCallback);
+        mealFilterCallback = setTimeout(refresh, 800);
+      });
+
+      $('#foodFilter').unbind('input').on('input', function() {
+        foodQuery = $(this).val();
+        clearTimeout(foodFilterCallback);
+        foodFilterCallback = setTimeout(refresh, 800);
       });
 
       $('.groceryMode').unbind('click').click(function() {
@@ -2216,30 +2222,31 @@
   </script>
   <div class="container" style="position: relative;height: 100%; width: 100%; max-width: 650px;">
     <div style="background-color: white; width: 100%;">
-      <h5 id="addRemoveToggle" class="btn btn-primary btn-sm" style="display: inline-block; vertical-align: top;margin-top: 10px;">Add or Eat</h5>
-      <div style="width: 430px; display: inline-block;max-width: 100%;">
-        <div id="mainTabSection" style="display: flex;flex-direction: row;flex-wrap: wrap;align-items: flex-start;padding-bottom: 2px;margin-left: 10px;">
-          <h5 class="tab" data-tab="food"><span class="tabText custom-underline-blue">Food</span></h5>
-          <h5 class="tab" data-tab="meals"><span class="tabText custom-underline-green custom-underline">Meals</span></h5>
+      <h5 id="addRemoveToggle" class="btn btn-primary btn-sm" style="display: inline-block; vertical-align: top;margin-top: 10px; margin-right: 10px;">Add or Eat</h5>
+      <div style="display: inline-block;max-width: 100%;">
+        <div id="mainTabSection" style="align-items: flex-start; padding-bottom: 2px; margin-left: 10px; display: inline-block;">
+          <h5 class="tab" data-tab="food" style="margin-right: 25px;"><span class="tabText custom-underline-blue">Food</span></h5>
+          <h5 class="tab" data-tab="meals" style="margin-right: 25px;"><span class="tabText custom-underline-green custom-underline">Meals</span></h5>
           <h5 class="tab" data-tab="grocery"><span class="tabText custom-underline-orange">Grocery List</span></h5>
         </div>
       </div>
     </div>
-    <div style="padding-top: 10px;">
-      <select id="mealType" class="form-control" style="width: auto;height: 37px; vertical-align: top;display: none;">
+    <div style="padding-top: 10px; position: relative;">
+      <select id="mealType" class="form-control" style="width: auto;height: 37px; vertical-align: top;display: none;padding-right: 0px;padding-left: 5px;">
         <option value="all">All Meals</option>
         <option value="breakfast">Breakfast</option>
         <option value="lunch">Lunch</option>
         <option value="snacks">Snacks</option>
         <option value="dinner">Dinner</option>
       </select>
-      <input id="filter" class="form-control" style="width: calc(100% - 140px); height: 37px; display: none;" placeholder="Filter">
+      <input id="foodFilter" class="form-control" style="width: calc(100% - 75px); height: 37px; display: none;" placeholder="Filter">
+      <input id="mealFilter" class="form-control" style="width: calc(100% - 175px); height: 37px; display: none;" placeholder="Filter">
       <div id="newItem" class="btn btn-primary" style="height: 37px; vertical-align: top; padding-top: 4px; display: none;">New</div>
     </div>
-    <div id="foodSection" style="padding-top: 10px; position: relative;height: calc(100% - 95px);display: none;;">
+    <div id="foodSection" style="padding-top: 10px; position: relative;height: calc(100% - 95px);display: none; width: 100%;">
       <div id="foodList" style="overflow-y: scroll; height: 100%; width: 100%;"></div>
     </div>
-    <div id="mealSection" style="position: relative; height: calc(100% - 95px); display: none; margin-top: 10px;">
+    <div id="mealSection" style="position: relative; height: calc(100% - 95px); display: none; margin-top: 10px; width: 100%;">
       <div id="mealList" style="padding-top: 0px; overflow-y: scroll; height: 100%; width: 100%;"></div>
     </div>
     <div id="grocerySection" style="position: relative;height: calc(100% - 95px); display: none">
