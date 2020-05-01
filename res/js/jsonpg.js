@@ -4,9 +4,10 @@ var jsonpg = {};
 var domain = 'jsonpg.herokuapp.com';
 
 var proxy = function(url) {
-  // return url;
-  // return 'http://localhost:3301/proxy?url=' + encodeURIComponent(url);
   return 'https://medmap.tech/proxy?url=' + encodeURIComponent(url);
+  // return url;
+
+  // return 'http://localhost:3301/proxy?url=' + encodeURIComponent(url);
 }
 
 var splitPath = function(path) {

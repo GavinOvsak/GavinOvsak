@@ -1246,12 +1246,7 @@
     var food = {};
     var meals = {};
 
-    var groceryCart = {
-      'Trader Joe\'s': {
-        'f2': 1,
-        'f13': 2
-      }
-    }; // Add new options with 0
+    var groceryCart = {};
 
     var tab = 'food'; //food, meals, grocery
     var mealType = 'all';
@@ -1271,18 +1266,12 @@
 
     var foodUpdateCallback = null;
     var updateFood = function(fId) {
-      clearTimeout(foodUpdateCallback);
-      foodUpdateCallback = setTimeout(function() {
-        jsonpg.set('gavinovsak.food.food', food);
-      }, 500);
+      jsonpg.set('gavinovsak.food.food.'+fId, food[fId]);
     };
 
     var mealUpdateCallback = null;
-    var updateMeal = function(fId) {
-      clearTimeout(mealUpdateCallback);
-      mealUpdateCallback = setTimeout(function() {
-        jsonpg.set('gavinovsak.food.meals', meals);
-      }, 500);
+    var updateMeal = function(mId) {
+      jsonpg.set('gavinovsak.food.meals.'+mId, meals[mId]);
     };
 
     var refreshFoodModal = function() {
@@ -1456,16 +1445,16 @@
           for (var fId in editObj) {
             var foodItem = food[fId];
 
-            var lastItem = (foodItem.items || []).slice(-1);
+            var lastItem = (foodItem.items || []).slice(-1)[0];
             if (foodItem.items.length == 0 || lastItem.bought != date.getTime()) {
               foodItem.items.push({
                 bought: date.getTime(),
                 amount: editObj[fId]
               });
-              updateFood(fId);
             } else {
               lastItem.amount += editObj[fId];
             }
+            updateFood(fId);
           }
         } else if (editMode == 'remove') {
           // Bringing down the amount of a closed pack should open it if opened as a pack, or if not as a pack and a fraction is left, go for it.
@@ -1482,7 +1471,7 @@
                 if (amountLeft < item.amount) {
                   item.amount -= amountLeft;
                   amountLeft = 0;
-                  if (item.opened == null && amountLeft < stepAmt) {
+                  if (foodItem.expireDaysAfterOpen != null && item.opened == null && amountLeft < stepAmt) {
                     // If closed, and amount left is less than amt in pack or self, then bump out into its own opened thing. Leave a multiple of stepAmt
                     var bumpAmt = item.amount % stepAmt;
                     if (bumpAmt == 0) {
@@ -1572,9 +1561,38 @@
         'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"></span>';
     };
 
+    var addGoalSectionBox = null;
+    var addGrocerySectionBox = null; 
+    var mealContentAddSectionBox = null;
+    var foodStoreBox = null;
+    var editLookUpBox = null;
+
     var refresh = function() {
       $('.tabText').removeClass('custom-underline');
       $('.tab[data-tab="'+tab+'"]').find('.tabText').addClass('custom-underline');
+
+      query = $('#filter').val();
+
+      var mealData = keys(meals).map(function(mId) {
+        return { label: meals[mId].name, value: mId };
+      });
+      var foodData = keys(food).map(function(fId) {
+        return { label: food[fId].name, value: fId }
+      });
+
+      if (addGoalSectionBox != null) addGoalSectionBox.list = mealData;
+      if (addGrocerySectionBox != null) addGrocerySectionBox.list = foodData;
+      if (mealContentAddSectionBox != null) mealContentAddSectionBox.list = foodData;
+      if (foodStoreBox != null) foodStoreBox.list = _.uniq(_.values(food).map(a.prop('store')));
+      if (editLookUpBox != null) {
+        editLookUpBox.list = keys(food).map(function(fId) {
+          return { label: food[fId].name + ' (Food)', value: fId }
+        }).concat(keys(meals).filter(function(mId) {
+          return keys(meals[mId].food).length > 1;
+        }).map(function(mId) {
+          return { label: meals[mId].name + ' (Meal)', value: mId }
+        }));
+      }
 
       $('#foodSection').toggle(tab == 'food');
       $('#mealSection').toggle(tab == 'meals');
@@ -2098,10 +2116,8 @@
         refresh();
       });
 
-      var addGoalSectionBox = new Awesomplete($('#addGoalSection')[0], {
-        list: keys(meals).map(function(mId) {
-          return { label: meals[mId].name, value: mId };
-        }),
+      addGoalSectionBox = new Awesomplete($('#addGoalSection')[0], {
+        list: [],
         replace: function() {
           $('#addGoalSection').val('');
         },
@@ -2118,10 +2134,8 @@
         refresh();
       });
 
-      var addGrocerySectionBox = new Awesomplete($('#addGrocerySection')[0], {
-        list: keys(food).map(function(fId) {
-          return { label: food[fId].name, value: fId }
-        }),
+      addGrocerySectionBox = new Awesomplete($('#addGrocerySection')[0], {
+        list: [],
         replace: function() {
           $('#addGrocerySection').val('')
         },
@@ -2140,10 +2154,8 @@
         refresh();
       });
 
-      var mealContentAddSectionBox = new Awesomplete($('#mealContentAddSection')[0], {
-        list: keys(food).map(function(fId) {
-          return { label: food[fId].name, value: fId }
-        }),
+      mealContentAddSectionBox = new Awesomplete($('#mealContentAddSection')[0], {
+        list: [],
         replace: function() {
           $('#mealContentAddSection').val('')
         },
@@ -2157,14 +2169,8 @@
         refreshMealModal();
       });
 
-      var editLookUpBox = new Awesomplete($('#editLookUp')[0], {
-        list: keys(food).map(function(fId) {
-          return { label: food[fId].name + ' (Food)', value: fId }
-        }).concat(keys(meals).filter(function(mId) {
-          return keys(meals[mId].food).length > 1;
-        }).map(function(mId) {
-          return { label: meals[mId].name + ' (Meal)', value: mId }
-        })),
+      editLookUpBox = new Awesomplete($('#editLookUp')[0], {
+        list: [],
         replace: function() {
           $('#editLookUp').val('')
         },
@@ -2187,9 +2193,8 @@
         refreshEditModal();
       });
 
-      var allStores = _.uniq(_.values(food).map(a.prop('store')));
-      var foodStoreBox = new Awesomplete($('#foodStore')[0], {
-        list: allStores, 
+      foodStoreBox = new Awesomplete($('#foodStore')[0], {
+        list: [], 
         minChars: 1,
         autoFirst: true,
         maxItems: 8
