@@ -115,9 +115,10 @@
 <body style="">
   <style>
     .amtInput {
-      width: 70px; 
+      width: 60px; 
       display: inline-block;
       padding-top: 5px;
+      padding-left: 8px;
       padding-bottom: 5px;
       padding-right: 5px;
       margin-bottom: 8px;
@@ -1554,11 +1555,11 @@
       var subItemDate = new Date(subItem[type]);
       var dateText = (subItemDate.getMonth()+1)+'/'+(subItemDate.getDate());
 
-      return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><span class="dateInput">'+dateText+'</span><input type="text"'+
+      return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><input type="text"'+
         'data-date-format="mm/dd" data-language="en" '+
         'class="datepicker-here" '+
-        'data-position="bottom right" '+
-        'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"></span>';
+        'data-position="bottom left" '+
+        'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"><span class="dateInput">'+dateText+'</span></span>';
     };
 
     var addGoalSectionBox = null;
@@ -1632,19 +1633,19 @@
               if (item.expireDays != null || (item.expireDaysAfterOpen != null && subItem.opened != null)) {
                 if (daysToExpire > 0) {
                   // Math.round(item.expireDays - daysSinceBought)
-                  expireNote = '<h6 style="display: inline-block; color: grey; margin-right: 2px;">(bad in '+daysToExpire+' days)</h6>'
+                  expireNote = '<h6 style="display: inline-block; color: grey; margin-right: 2px; margin-left: 5px;">(bad in '+daysToExpire+' days)</h6>'
                 } else {
                   var expireDate = new Date(Date.now() + daysToExpire * day);
-                  expireNote = '<h6 style="display: inline-block; color: #e60606; margin-right: 2px;">(went bad on ' + (expireDate.getMonth()+1)+'/'+(expireDate.getDate()) + ')</h6>'
+                  expireNote = '<h6 style="display: inline-block; color: #e60606; margin-right: 2px; margin-left: 5px;">(went bad on ' + (expireDate.getMonth()+1)+'/'+(expireDate.getDate()) + ')</h6>'
                 }
               }
 
               return ''+
               '<div class="itemRow" data-subIndex="'+sub_i+'">'+
               '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;" value="'+subItem.amount+'" type="number">'+
-              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 80px); margin-top: 0px;"><h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from '+dateInput(item.id, sub_i, 'bought')+'</h6>'+
+              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;"><h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item.id, sub_i, 'bought')+'</h6>'+
               (subItem.opened != null ? 
-              '<h6 style="display: inline-block;margin-left: 0px;"> opened '+dateInput(item.id, sub_i, 'opened')+'</h6>' : '')+
+              '<h6 style="display: inline-block;margin-left: 5px;"> opened '+dateInput(item.id, sub_i, 'opened')+'</h6>' : '')+
               (expireNote != null ? expireNote : '')+
               ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;margin-top: 5px;padding-bottom: 2px;padding-top: 2px; margin-right: 5px;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
               '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span></span>'+
