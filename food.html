@@ -1527,7 +1527,7 @@
       if (item.expireDaysAfterOpen != null && subItem.opened != null) {
         var openedDate = new Date(subItem.opened);
         var daysSinceOpened = (Date.now() - openedDate.getTime()) / day;
-        expireDays.push(Math.floor(item.expireDays - daysSinceOpened));
+        expireDays.push(Math.floor(item.expireDaysAfterOpen - daysSinceOpened));
       }
 
       if (item.expireDays != null) {
@@ -1549,17 +1549,25 @@
       }));
     };
 
-    var dateInput = function(fId, subIndex, type) {
+    var dateInput = function(fId, subIndex, type, isRight) {
       var item = food[fId];
       var subItem = item.items[subIndex];
       var subItemDate = new Date(subItem[type]);
       var dateText = (subItemDate.getMonth()+1)+'/'+(subItemDate.getDate());
 
-      return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><input type="text"'+
-        'data-date-format="mm/dd" data-language="en" '+
-        'class="datepicker-here" '+
-        'data-position="bottom left" '+
-        'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"><span class="dateInput">'+dateText+'</span></span>';
+      if (isRight) {
+        return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><span class="dateInput">'+dateText+'</span><input type="text"'+
+          'data-date-format="mm/dd" data-language="en" '+
+          'class="datepicker-here" '+
+          'data-position="bottom right" '+
+          'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"></span>';
+      } else {
+        return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><input type="text"'+
+          'data-date-format="mm/dd" data-language="en" '+
+          'class="datepicker-here" '+
+          'data-position="bottom left" '+
+          'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"><span class="dateInput">'+dateText+'</span></span>';
+      }
     };
 
     var addGoalSectionBox = null;
@@ -1643,9 +1651,9 @@
               return ''+
               '<div class="itemRow" data-subIndex="'+sub_i+'">'+
               '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;" value="'+subItem.amount+'" type="number">'+
-              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;"><h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item.id, sub_i, 'bought')+'</h6>'+
+              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;"><h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item.id, sub_i, 'bought', false)+'</h6>'+
               (subItem.opened != null ? 
-              '<h6 style="display: inline-block;margin-left: 5px;"> opened '+dateInput(item.id, sub_i, 'opened')+'</h6>' : '')+
+              '<h6 style="display: inline-block;margin-left: 5px;"> opened '+dateInput(item.id, sub_i, 'opened', true)+'</h6>' : '')+
               (expireNote != null ? expireNote : '')+
               ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;margin-top: 5px;padding-bottom: 2px;padding-top: 2px; margin-right: 5px;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
               '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span></span>'+
