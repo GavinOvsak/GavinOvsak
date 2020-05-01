@@ -1,0 +1,2406 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<title>Food Dashboard</title>
+
+<script src="./res/js/jquery-2.2.4.js"></script>
+<script src="./res/js/popper.min.js"></script>
+<script src="./res/js/bootstrap.min.js"></script>
+<script src="./res/js/awesomplete.js"></script>
+<script src="./res/js/lodash.min.js"></script>
+<script src="./res/js/jsonpg.js"></script>
+<script src="./res/js/utilities.js"></script>
+<script src="./res/js/arrayManip.js"></script>
+
+<link rel="stylesheet" href="./res/css/bootstrap.min.css">
+<link rel="stylesheet" href="./res/css/awesomplete.css"></link>
+<link rel="stylesheet" href="./res/css/jquery-ui.css">
+<link rel="stylesheet" href="./res/css/font-awesome.css">
+<link rel="preload" href="./res/css/fontawesome-webfont.woff" as="font" type="font/woff">
+
+<link href="./res/css/datepicker.css" rel="stylesheet" type="text/css">
+<script src="./res/js/datepicker.min.js"></script>
+<script src="./res/js/datepicker.en.js"></script>
+
+<style>
+  .tab {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    flex: 1;
+    text-align: center;
+    max-width: 120px;
+    cursor: pointer;
+  }
+
+  .tabText {
+    position: relative;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .custom-underline,
+  .custom-underline:hover,
+  .custom-underline:focus,
+  .custom-underline:active {
+    text-decoration: none;
+  }
+
+  .custom-underline::after {
+    content: "";
+    position: absolute;
+  }
+
+  .custom-underline::after {
+    height: 3px;
+    bottom: -7px;
+    width: 120%;
+    left: -10%;
+    background-color: #46a44f;
+  }
+
+  .custom-underline-black::after {
+    bottom: -7px;
+    width: 120%;
+    left: -10%;
+    background-color: black;
+  }
+
+  .custom-underline-red::after {
+    bottom: -7px;
+    width: 120%;
+    left: -10%;
+    background-color: red;
+  }
+  .custom-underline-red {
+    color: red;
+  }
+
+  .custom-underline-blue::after {
+    bottom: -7px;
+    width: 120%;
+    left: -10%;
+    background-color: #1212b1;
+  }
+  .custom-underline-blue {
+    color: #1212b1;
+  }
+
+  .custom-underline-green::after {
+    bottom: -7px;
+    width: 120%;
+    left: -10%;
+    background-color: green;
+  }
+  .custom-underline-green {
+    color: green;
+  }
+
+  .custom-underline-orange::after {
+    bottom: -7px;
+    width: 120%;
+    left: -10%;
+    background-color: #ff8400;
+  }
+  .custom-underline-orange {
+    color: #ff8400;
+  }
+
+  
+</style>
+
+</head>
+<body style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px; padding-top: 5px;">
+  <style>
+    .amtInput {
+      width: 70px; 
+      display: inline-block;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-right: 5px;
+      margin-bottom: 8px;
+      height: 35px;
+    }
+
+    .foodRow {
+      width: calc(100% - 10px);
+      background-color: #d7d7d7;
+      border-radius: 5px;
+      margin-top: 12px;
+      margin-right: 10px;
+      padding-top: 10px;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    .mealRow {
+      width: calc(100% - 10px);
+      background-color: #d7d7d7;
+      border-radius: 5px;
+      margin-top: 12px;
+      padding: 10px;
+      margin-right: 10px;
+    }
+
+    .goalRow {
+      width: calc(100% - 10px);
+      background-color: #d7d7d7;
+      border-radius: 5px;
+      margin-top: 8px;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 10px;
+      margin-bottom: 8px;
+    }
+  </style>
+  <script>
+    // var food = {
+    //   'f1': {
+    //     id: 'f1',
+    //     name: 'Hashbrowns',
+    //     packAmount: 12,
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 12
+    //     }]
+    //   },
+    //   'f2': {
+    //     id: 'f2',
+    //     name: 'Eggs',
+    //     packAmount: 12,
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.49,
+    //     expireDays: 20,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 16
+    //     }]
+    //   },
+    //   'f3': {
+    //     id: 'f3',
+    //     name: 'Shredded Cheddar',
+    //     store: 'Trader Joe\'s',
+    //     cost: 6.36,
+    //     expireDays: 20,
+    //     expireDaysAfterOpen: 6,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f4': {
+    //     id: 'f4',
+    //     name: 'Avocado',
+    //     store: 'Trader Joe\'s',
+    //     cost: 1.59,
+    //     expireDays: 14,
+    //     expireDaysAfterOpen: 5,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 3
+    //     }]
+    //   },
+    //   'f5': {
+    //     id: 'f5',
+    //     name: 'Tuscan Pane Bread Slices',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.49,
+    //     expireDays: 20,
+    //     packAmount: 17,
+    //     expireDaysAfterOpen: 20,
+    //     openInPack: true,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 17
+    //     }]
+    //   },
+    //   'f6': {
+    //     id: 'f6',
+    //     name: 'Noosa Yogurt',
+    //     store: 'Target',
+    //     packAmount: 4,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 4
+    //     }]
+    //   },
+    //   'f7': {
+    //     id: 'f7',
+    //     name: 'Eggo Waffles',
+    //     packAmount: 12,
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 8
+    //     }]
+    //   },
+    //   'f8': {
+    //     id: 'f8',
+    //     name: 'Shredded Mozzarella',
+    //     store: 'Trader Joe\'s',
+    //     cost: 4.29,
+    //     expireDays: 20,
+    //     expireDaysAfterOpen: 6,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f9': {
+    //     id: 'f9',
+    //     name: 'Ramen',
+    //     store: 'H Mart',
+    //     packAmount: 12,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 8
+    //     }]
+    //   },
+    //   'f10': {
+    //     id: 'f10',
+    //     name: 'Curry',
+    //     store: 'H Mart',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 3
+    //     }]
+    //   },
+    //   'f11': {
+    //     id: 'f11',
+    //     name: 'Breaded Chicken',
+    //     store: 'Trader Joe\'s',
+    //     cost: 7.99,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1.5
+    //     }]
+    //   },
+    //   'f12': {
+    //     id: 'f12',
+    //     name: 'Mac and Cheese Balls',
+    //     store: 'Trader Joe\'s',
+    //     cost: 3.99,
+    //     packAmount: 10,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 15
+    //     }]
+    //   },
+    //   'f13': {
+    //     id: 'f13',
+    //     name: 'Frozen Fruit',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f13': {
+    //     id: 'f13',
+    //     name: 'Almond Milk',
+    //     store: 'Trader Joe\'s',
+    //     expireDays: 18,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 0.8
+    //     }]
+    //   },
+    //   'f14': {
+    //     id: 'f14',
+    //     name: 'Wheat Flour',
+    //     store: 'H Mart',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 0.6
+    //     }]
+    //   },
+    //   'f15': {
+    //     id: 'f15',
+    //     name: 'Turkey',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 6,
+    //     cost: 2.99,
+    //     expireDays: 20,
+    //     expireDaysAfterOpen: 5,
+    //     openInPack: true,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 6
+    //     }]
+    //   },
+    //   'f16': {
+    //     id: 'f16',
+    //     name: 'Salad Lettuce',
+    //     store: 'Trader Joe\'s',
+    //     cost: 1.99,
+    //     expireDays: 14,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f17': {
+    //     id: 'f17',
+    //     name: 'Hummus',
+    //     store: 'Trader Joe\'s',
+    //     cost: 3.99,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f18': {
+    //     id: 'f18',
+    //     name: 'Carrots',
+    //     store: 'Trader Joe\'s',
+    //     expireDays: 20,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 0.8
+    //     }]
+    //   },
+    //   'f19': {
+    //     id: 'f19',
+    //     name: 'Bananas',
+    //     store: 'Trader Joe\'s',
+    //     cost: 0.19,
+    //     items: []
+    //   },
+    //   'f20': {
+    //     id: 'f20',
+    //     name: 'Chocolate Lava Cake',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 2,
+    //     items: []
+    //   },
+    //   'f21': {
+    //     id: 'f21',
+    //     name: 'Apple Blossoms',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.29,
+    //     packAmount: 2,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 2
+    //     }]
+    //   },
+    //   'f22': {
+    //     id: 'f22',
+    //     name: 'Oranges',
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 3
+    //     }]
+    //   },
+    //   'f23': {
+    //     id: 'f23',
+    //     name: 'Chocolate Covered Bananas',
+    //     store: 'Trader Joe\'s',
+    //     cost: 1.99,
+    //     items: []
+    //   },
+    //   'f24': {
+    //     id: 'f24',
+    //     name: 'Chocolate Covered Strawberries',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.29,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f25': {
+    //     id: 'f25',
+    //     name: 'Lentils',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f26': {
+    //     id: 'f26',
+    //     name: 'Pasta Macaroni',
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 2
+    //     }]
+    //   },
+    //   'f27': {
+    //     id: 'f27',
+    //     name: 'Alfredo Sauce',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f28': {
+    //     id: 'f28',
+    //     name: 'Mozzarella Cheese Ball',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.99,
+    //     expireDays: 10,
+    //     expireDaysAfterOpen: 4,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f29': {
+    //     id: 'f29',
+    //     name: 'Tomato Basil Marinara Sauce',
+    //     store: 'Trader Joe\'s',
+    //     cost: 1.79,
+    //     expireDays: 30,
+    //     expireDaysAfterOpen: 12,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f30': {
+    //     id: 'f30',
+    //     name: 'Asparagus',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.49,
+    //     expireDays: 12,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f31': {
+    //     id: 'f31',
+    //     name: 'Olive Oil',
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 0.5
+    //     }]
+    //   },
+    //   'f32': {
+    //     id: 'f32',
+    //     name: 'Meatballs',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 12,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 6
+    //     }]
+    //   },
+    //   'f33': {
+    //     id: 'f33',
+    //     name: 'Bimimbap',
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f34': {
+    //     id: 'f34',
+    //     name: 'Chicken Samosas',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 12,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 6
+    //     }]
+    //   },
+    //   'f35': {
+    //     id: 'f35',
+    //     name: 'Veggie Samosas',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 12,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 6
+    //     }]
+    //   },
+    //   'f36': {
+    //     id: 'f36',
+    //     name: 'Canned Tomatoes',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f37': {
+    //     id: 'f37',
+    //     name: 'Red Pepper',
+    //     store: 'Trader Joe\'s',
+    //     expireDays: 14,
+    //     items: []
+    //   },
+    //   'f38': {
+    //     id: 'f38',
+    //     name: 'Kung Pao Chicken',
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f39': {
+    //     id: 'f39',
+    //     name: 'Gnocchi',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f40': {
+    //     id: 'f40',
+    //     name: 'Spring Rolls',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 5,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 2
+    //     }]
+    //   },
+    //   'f41': {
+    //     id: 'f41',
+    //     name: 'Lasagna No Boil Pasta',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f42': {
+    //     id: 'f42',
+    //     name: 'Sweet Potato Fries',
+    //     store: 'Trader Joe\'s',
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 0.5
+    //     }]
+    //   },
+    //   'f43': {
+    //     id: 'f43',
+    //     name: 'Lemons',
+    //     store: 'Trader Joe\'s',
+    //     expireDays: 20,
+    //     items: [{
+    //       bought: 1587672212119,
+    //       amount: 2
+    //     }]
+    //   },
+    //   'f43': {
+    //     id: 'f43',
+    //     name: 'Gyro Meat',
+    //     store: 'Trader Joe\'s',
+    //     expireDaysAfterOpen: 5,
+    //     items: []
+    //   },
+    //   'f44': {
+    //     id: 'f44',
+    //     name: 'Blue Corn Tortilla Chips',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.99,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f45': {
+    //     id: 'f45',
+    //     name: 'Salsa',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.99,
+    //     expireDays: 25,
+    //     expireDaysAfterOpen: 18,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       opened: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f46': {
+    //     id: 'f46',
+    //     name: 'Rice',
+    //     store: 'Trader Joe\'s',
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 0.5
+    //     }]
+    //   },
+    //   'f47': {
+    //     id: 'f47',
+    //     name: 'Ketchup',
+    //     store: 'Trader Joe\'s',
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 0.5
+    //     }]
+    //   },
+    //   'f48': {
+    //     id: 'f48',
+    //     name: 'Salad Dressing',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f49': {
+    //     id: 'f49',
+    //     name: 'Tatziki Sauce',
+    //     store: 'Trader Joe\'s',
+    //     expireDaysAfterOpen: 7,
+    //     expireDays: 20,
+    //     items: []
+    //   },
+    //   'f50': {
+    //     id: 'f50',
+    //     name: 'Alfredo Pasta Pack',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f51': {
+    //     id: 'f51',
+    //     name: 'Pancake Mix',
+    //     store: 'Trader Joe\'s',
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 2
+    //     }]
+    //   },
+    //   'f52': {
+    //     id: 'f52',
+    //     name: 'Canned Soup',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f53': {
+    //     id: 'f53',
+    //     name: 'Bagels',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.29,
+    //     packAmount: 6,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 4
+    //     }]
+    //   },
+    //   'f54': {
+    //     id: 'f54',
+    //     name: 'Scone Mix',
+    //     store: 'Trader Joe\'s',
+    //     cost: 3.69,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f55': {
+    //     id: 'f55',
+    //     name: 'Cereal',
+    //     store: 'Trader Joe\'s',
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f56': {
+    //     id: 'f56',
+    //     name: 'Garlic',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 20,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 9
+    //     }]
+    //   },
+    //   'f57': {
+    //     id: 'f57',
+    //     name: 'Scallion Pancakes',
+    //     store: 'Trader Joe\'s',
+    //     packAmount: 4,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 3
+    //     }]
+    //   },
+    //   'f58': {
+    //     id: 'f58',
+    //     name: 'Raspberry Baton',
+    //     store: 'Trader Joe\'s',
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 2
+    //     }]
+    //   },
+    //   'f59': {
+    //     id: 'f59',
+    //     name: 'Ricotta',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.99,
+    //     expireDaysAfterOpen: 7, 
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f60': {
+    //     id: 'f60',
+    //     name: 'Decaf Coffee Cups',
+    //     store: 'Trader Joe\'s',
+    //     cost: 4.99,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f61': {
+    //     id: 'f61',
+    //     name: 'Cucumbers',
+    //     store: 'Trader Joe\'s',
+    //     cost: 1.99,
+    //     packAmount: 5,
+    //     expireDays: 12,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 5
+    //     }]
+    //   },
+    //   'f62': {
+    //     id: 'f62',
+    //     name: 'Sliced Smoked Gouda',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.99,
+    //     packAmount: 8,
+    //     expireDaysAfterOpen: 7,
+    //     openInPack: true,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 6
+    //     }]
+    //   },
+    //   'f63': {
+    //     id: 'f63',
+    //     name: 'Apple',
+    //     store: 'Trader Joe\'s',
+    //     cost: 0.69,
+    //     expireDays: 18,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 3
+    //     }]
+    //   },
+    //   'f64': {
+    //     id: 'f64',
+    //     name: 'Bolognese Sauce',
+    //     store: 'Trader Joe\'s',
+    //     cost: 3.29,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 3
+    //     }]
+    //   },
+    //   'f65': {
+    //     id: 'f65',
+    //     name: 'Chicken Broth',
+    //     store: 'Trader Joe\'s',
+    //     cost: 1.99,
+    //     expireDays: 30,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f66': {
+    //     id: 'f66',
+    //     name: 'Limeade',
+    //     store: 'Trader Joe\'s',
+    //     cost: 2.29,
+    //     expireDays: 20,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 0.8
+    //     }]
+    //   },
+    //   'f67': {
+    //     id: 'f67',
+    //     name: 'Orange Juice',
+    //     store: 'Trader Joe\'s',
+    //     expireDays: 14,
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 0.7
+    //     }]
+    //   },
+    //   'f68': {
+    //     id: 'f68',
+    //     name: 'Spinach Tortellini',
+    //     store: 'Trader Joe\'s',
+    //     items: [{  
+    //       bought: 1587672212119,
+    //       amount: 1
+    //     }]
+    //   },
+    //   'f69': {
+    //     id: 'f69',
+    //     name: 'Condensed Milk',
+    //     store: 'Trader Joe\'s',
+    //     items: []
+    //   },
+    //   'f70': {
+    //     id: 'f70',
+    //     name: 'Pulled Pork Brisket',
+    //     store: 'Trader Joe\'s',
+    //     expireDaysAfterOpen: 4,
+    //     items: []
+    //   }
+    // };
+    // var meals = {
+    //   'm1': {
+    //     id: 'm1',
+    //     name: 'Hashbrowns, Eggs, & Avocado Toast',
+    //     serves: 2,
+    //     food: {
+    //       'f1': 3, // Hashbrowns
+    //       'f2': 2, // Eggs
+    //       'f4': 0.5, // Avocado
+    //       'f5': 2 // Bread slices
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     },
+    //     stock: 4
+    //   },
+    //   'm2': {
+    //     id: 'm2',
+    //     name: 'Yogurt',
+    //     serves: 1,
+    //     food: {
+    //       'f6': 1 // Noosa Yogurt
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     },
+    //     stock: 2
+    //   },
+    //   'm3': {
+    //     id: 'm3',
+    //     name: 'Cereal',
+    //     serves: 1,
+    //     food: {
+    //       'f55': 1/20 // Cereal
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     }
+    //   },
+    //   'm4': {
+    //     id: 'm4',
+    //     name: 'Smoothies',
+    //     serves: 2,
+    //     food: {
+    //       'f13': 0.2 // Frozen Food
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     }
+    //   },
+    //   'm5': {
+    //     id: 'm5',
+    //     name: 'Pancakes',
+    //     serves: 2,
+    //     food: {
+    //       'f51': 0.25, // Pancake Mix
+    //       'f2': 1 // Egg
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     }
+    //   },
+    //   'm6': {
+    //     id: 'm6',
+    //     name: 'Waffle Maker Waffles',
+    //     serves: 2,
+    //     food: {
+    //       'f51': 0.25, // Pancake Mix
+    //       'f2': 1, // Egg
+    //       'f31': 1/8 // Olive Oil
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     }
+    //   },
+    //   'm7': {
+    //     id: 'm7',
+    //     name: 'Eggo Waffles',
+    //     serves: 2,
+    //     food: {
+    //       'f7': 2 // Waffles
+    //     },
+    //     types: {
+    //       'breakfast': true
+    //     }
+    //   },
+    //   'm8': {
+    //     id: 'm8',
+    //     name: 'Turkey sandwiches',
+    //     serves: 2,
+    //     food: {
+    //       'f15': 2, // Turkey
+    //       'f16': 1/8, // Salad
+    //       'f5': 4, // Bread
+    //       'f4': 1/2, // Avocado
+    //       'f28': 1/8 // Mozzarella Cheese Ball
+    //     },
+    //     types: {
+    //       'lunch': true
+    //     }
+    //   },
+    //   'm9': {
+    //     id: 'm9',
+    //     name: 'Ramen',
+    //     serves: 2,
+    //     food: {
+    //       'f9': 2 // Ramen
+    //     },
+    //     types: {
+    //       'lunch': true
+    //     }
+    //   },
+    //   'm10': {
+    //     id: 'm10',
+    //     name: 'Mac and Cheese',
+    //     serves: 2,
+    //     food: {
+    //       'f3': 1/5, // Shredded Cheddar
+    //       'f26': 1/4, // Pasta Macaroni
+    //     },
+    //     types: {
+    //       'lunch': true
+    //     }
+    //   },
+    //   'm11': {
+    //     id: 'm11',
+    //     name: 'Rice and Curry',
+    //     serves: 2,
+    //     food: {
+    //       'f10': 2, // Curry
+    //       'f46': 1/15 // Rice
+    //     },
+    //     types: {
+    //       'lunch': true
+    //     }
+    //   },
+    //   'm12': {
+    //     id: 'm12',
+    //     name: 'Mac and cheese balls, asparagus, and brisket',
+    //     serves: 2,
+    //     food: {
+    //       'f12': 5, // Mac and cheese balls
+    //       'f30': 1/2, // Asparagus
+    //       'f56': 1, // Garlic
+    //       'f70': 1/2 // Pulled Pork Brisket
+    //     },
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm13': {
+    //     id: 'm13',
+    //     name: 'Shakshuka',
+    //     serves: 2,
+    //     food: {
+    //       'f36': 1, // Canned Tomatoes
+    //       'f2': 3, // Eggs
+    //       'f37': 1, // Red Pepper
+    //       'f28': 1/4 // Mozzarella Cheese Ball
+    //     },
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm14': {
+    //     id: 'm14',
+    //     name: 'Bimimbap',
+    //     serves: 1,
+    //     food: {
+    //       'f33': 1 // Bimimbap
+    //     },
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm15': {
+    //     id: 'm15',
+    //     name: 'Chicken, fries, mac & cheese balls',
+    //     serves: 2,
+    //     food: {
+    //       'f11': 0.5, // Breaded chicken
+    //       'f42': 0.5, // Sweet potato fries
+    //       'f12': 5 // Mac and cheese balls
+    //     },
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm16': {
+    //     id: 'm16',
+    //     name: 'Scallion pancakes and ramen',
+    //     serves: 2,
+    //     food: {
+    //       'f57': 1, // Scallion Pancakes
+    //       'f9': 2 // Ramen
+    //     },
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm17': {
+    //     id: 'm17',
+    //     name: 'Gnocchi and meatballs',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm18': {
+    //     id: 'm18',
+    //     name: 'Lasagna',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm19': {
+    //     id: 'm19',
+    //     name: 'Kung Pao',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm20': {
+    //     id: 'm20',
+    //     name: 'Chicken Samosas',
+    //     serves: 2,
+    //     notes: '400 degrees for 14-16 min',
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm21': {
+    //     id: 'm21',
+    //     name: 'Veggie Samosas',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm22': {
+    //     id: 'm22',
+    //     name: 'Spaghetti and Meatballs',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm23': {
+    //     id: 'm23',
+    //     name: 'Gyro Sandwiches',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm24': {
+    //     id: 'm24',
+    //     name: 'Eggrolls and Rice',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm25': {
+    //     id: 'm25',
+    //     name: 'Lentil Soup',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm26': {
+    //     id: 'm26',
+    //     name: 'Alfredo Pasta',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm27': {
+    //     id: 'm27',
+    //     name: 'Soup',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm28': {
+    //     id: 'm28',
+    //     name: 'Spinach Tortellini',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dinner': true
+    //     }
+    //   },
+    //   'm30': {
+    //     id: 'm30',
+    //     name: 'Chocolate covered bananas',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dessert': true
+    //     }
+    //   },
+    //   'm31': {
+    //     id: 'm31',
+    //     name: 'Chocolate covered strawberries',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dessert': true
+    //     }
+    //   },
+    //   'm32': {
+    //     id: 'm32',
+    //     name: 'Apple blossoms',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dessert': true
+    //     }
+    //   },
+    //   'm33': {
+    //     id: 'm33',
+    //     name: 'Lava Cakes',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dessert': true
+    //     }
+    //   },
+    //   'm34': {
+    //     id: 'm34',
+    //     name: 'Banana Bread',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'dessert': true
+    //     }
+    //   },
+    //   'm35': {
+    //     id: 'm35',
+    //     name: 'Hummus and Carrots',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'snacks': true
+    //     }
+    //   },
+    //   'm36': {
+    //     id: 'm36',
+    //     name: 'Chips and Hummus',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'snacks': true
+    //     }
+    //   },
+    //   'm37': {
+    //     id: 'm37',
+    //     name: 'Chips and Guac',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'snacks': true
+    //     }
+    //   },
+    //   'm38': {
+    //     id: 'm38',
+    //     name: 'Chips and Salsa',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'snacks': true
+    //     }
+    //   },
+    //   'm39': {
+    //     id: 'm39',
+    //     name: 'Scones',
+    //     serves: 2,
+    //     food: {},
+    //     types: {
+    //       'breakfast': true
+    //     }
+    //   }
+    // };
+
+    var food = {};
+    var meals = {};
+
+    var groceryCart = {
+      'Trader Joe\'s': {
+        'f2': 1,
+        'f13': 2
+      }
+    }; // Add new options with 0
+
+    var tab = 'food'; //food, meals, grocery
+    var mealType = 'all';
+    var day = 1000 * 60 * 60 * 24;
+    var query = '';
+    var groceryMode = 'buy'; // buy / goals
+
+    var foodId = null;
+    var mealId = null;
+    var editFoodObj = {};
+    var editMealObj = {};
+    var editObj = {};
+    var editMode = 'remove';
+
+    var today = new Date();
+    var date = new Date((today.getMonth() + 1) + '/' + today.getDate() + '/' + (today.getYear() + 1900));
+
+    var foodUpdateCallback = null;
+    var updateFood = function(fId) {
+      clearTimeout(foodUpdateCallback);
+      foodUpdateCallback = setTimeout(function() {
+        jsonpg.set('gavinovsak.food.food', food);
+      }, 500);
+    };
+
+    var mealUpdateCallback = null;
+    var updateMeal = function(fId) {
+      clearTimeout(mealUpdateCallback);
+      mealUpdateCallback = setTimeout(function() {
+        jsonpg.set('gavinovsak.food.meals', meals);
+      }, 500);
+    };
+
+    var refreshFoodModal = function() {
+      var item = editFoodObj;
+
+      if (item == null) return $('#foodModal').modal('hide');
+
+      $('#foodName, #foodCost, #foodPackAmount, #foodExpireDays, #foodStore, #foodExpireDaysAfterOpened').val('');
+
+      if(!$('#foodName').is(':focus')) $('#foodName').val(item.name);
+      $('#foodName').unbind('input').on('input', function() {
+        editFoodObj.name = $(this).val();
+      });
+
+      if(!$('#foodCost').is(':focus')) $('#foodCost').val(item.cost);
+      $('#foodCost').unbind('input').on('input', function() {
+        var cost = parseFloat($(this).val())
+        if (isNaN(cost) || cost < 0) return;
+        editFoodObj.cost = roundToDecimals(cost, 2);
+      });
+
+      if(!$('#foodPackAmount').is(':focus')) $('#foodPackAmount').val(item.packAmount);
+      $('#foodPackAmount').unbind('input').on('input', function() {
+        var packAmount = parseInt($(this).val());
+        if (isNaN(packAmount) || packAmount < 0) return;
+        editFoodObj.packAmount = packAmount;
+        if (packAmount == 0) delete editFoodObj.packAmount;
+      });
+
+      if(!$('#foodExpireDays').is(':focus')) $('#foodExpireDays').val(item.expireDays);
+      $('#foodExpireDays').unbind('input').on('input', function() {
+        var expireDays = parseInt($(this).val())
+        if (isNaN(expireDays) || expireDays < 0) return;
+        editFoodObj.expireDays = expireDays;
+        if (expireDays == 0) delete editFoodObj.expireDays;
+      });
+
+      if(!$('#foodStore').is(':focus')) $('#foodStore').val(item.store);
+      $('#foodStore').unbind('input').on('input', function() {
+        editFoodObj.store = $(this).val();
+      });
+
+      if(!$('#foodExpireDaysAfterOpened').is(':focus')) $('#foodExpireDaysAfterOpened').val(item.expireDaysAfterOpen);
+      $('#foodExpireDaysAfterOpened').unbind('input').on('input', function() {
+        var expireDaysAfterOpen = parseInt($(this).val())
+        if (isNaN(expireDaysAfterOpen) || expireDaysAfterOpen < 0) return;
+        editFoodObj.expireDaysAfterOpen = expireDaysAfterOpen;
+        if (expireDaysAfterOpen == 0) delete editFoodObj.expireDaysAfterOpen;
+      });
+
+      $('#foodOpenedAsPackSection').toggle(item.packAmount != null && item.expireDaysAfterOpen != null);
+      $('.foodOpenedAsPack').addClass('btn-light').removeClass('btn-success');
+      $('.foodOpenedAsPack[data-type="'+(item.openInPack ? 'Yes' : 'No')+'"]').removeClass('btn-light').addClass('btn-success');
+      $('.foodOpenedAsPack').unbind('click').click(function() {
+        var openInPack = getProp(this, 'type');
+        if (openInPack == 'Yes') editFoodObj.openInPack = openInPack;
+        else delete editFoodObj.openInPack;
+        refreshFoodModal();
+      });
+    };
+
+    var refreshMealModal = function() {
+      var item = editMealObj;
+      if (item == null) return $('#mealModal').modal('hide');
+
+      $('#mealName, #mealServes, #mealStock, #mealNotes, #mealContentAddSection').val('');
+
+      if(!$('#mealName').is(':focus')) $('#mealName').val(item.name);
+      $('#mealName').unbind('input').on('input', function() {
+        editMealObj.name = $(this).val();
+      });
+
+      if(!$('#mealServes').is(':focus')) $('#mealServes').val(item.serves);
+      $('#mealServes').unbind('input').on('input', function() {
+        var serves = parseInt($(this).val())
+        if (isNaN(serves) || serves < 0) return;
+        editMealObj.serves = serves;
+      });
+
+      if(!$('#mealStock').is(':focus')) $('#mealStock').val(item.stock);
+      $('#mealStock').unbind('input').on('input', function() {
+        var stock = parseInt($(this).val())
+        if ($(this).val().trim().length == 0) delete editMealObj.stock;
+        if (isNaN(stock) || stock <= 0) return;
+        editMealObj.stock = stock;
+      });
+
+      if(!$('#mealNotes').is(':focus')) $('#mealNotes').val(item.notes);
+      $('#mealNotes').unbind('input').on('input', function() {
+        editMealObj.notes = $(this).val();
+      });
+     
+      $('.mealTypeCheck').prop('checked', false);
+      for (var type in item.types) $('.mealTypeCheck[data-type="'+type+'"]').prop('checked', true);
+      $('.mealTypeCheck').unbind('change').on('change', function() {
+        var type = getProp(this, 'type');
+        editMealObj.types[type] = $(this).is(':checked');
+      });
+
+      var totalCost = 0;
+
+      $('#mealContents').empty();
+      for (var fId in item.food) {
+        var foodItem = food[fId];
+
+        if (foodItem.cost != null) totalCost += item.food[fId] * foodItem.cost * (foodItem.packAmount != null ? 1/foodItem.packAmount : 1);
+
+        $('#mealContents').append($(''+
+          '<div data-id="'+fId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
+          '  <input class="form-control amountMealContents" style="display: inline-block; width: 90px; height: 35px; margin-right: 5px;" value="'+item.food[fId]+'">'+
+          '  <h6 style="display: inline-block;">'+foodItem.name+'</h6>'+
+          '  <span class="icon-remove removeMealContents" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>'+
+          '</div>'));
+      }
+
+      $('.amountMealContents').parent().removeClass('has-error');
+      $('.amountMealContents').unbind('input').on('input', function() {
+        var fId = getProp(this, 'id');
+        var amount = parseFloat($(this).val())
+        var isErr = isNaN(amount);
+        $(this).parent().toggleClass('has-error', isErr);
+        if (isErr) return;
+        editMealObj.food[fId] = amount;
+
+        var totalCost = 0;
+        for (var fId in item.food) {
+          var foodItem = food[fId];
+          if (foodItem.cost != null) totalCost += item.food[fId] * foodItem.cost * (foodItem.packAmount != null ? 1/foodItem.packAmount : 1);
+        }
+
+        $('#mealCost').text('Total Cost: $' + roundToDecimals(totalCost, 2));
+      });
+
+      $('.removeMealContents').unbind('click').click(function() {
+        var fId = getProp(this, 'id');
+        delete editMealObj.food[fId];
+        updateFood(fId);
+        refreshMealModal();
+      });
+
+      $('#mealCost').text('Total Cost: $' + roundToDecimals(totalCost, 2));
+    };
+
+    var refreshEditModal = function() {
+      $('#editList').empty();
+      for (var id in editObj) {
+        var item = food[id] || meals[id];
+
+        $('#editList').append($(''+
+          '<div data-id="'+id+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
+          '  <input class="form-control editListAmount" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" value="'+editObj[id]+'">'+
+          '  <h6 style="display: inline-block;">'+item.name+'</h6>'+
+          '  <span class="icon-remove editListRemove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>'+
+          '</div>'));
+      }
+
+      $('.editMode[data-type="add"]')
+        .toggleClass('btn-primary', editMode == 'add')
+        .removeClass('btn-light', editMode != 'add');
+      $('.editMode[data-type="remove"]')
+        .toggleClass('btn-danger', editMode == 'remove')
+        .removeClass('btn-light', editMode != 'remove');
+
+      $('.editMode').unbind('click').click(function() {
+        editMode = getProp(this, 'type');
+        refreshEditModal();
+      });
+
+      $('#editSubmit').unbind('click').click(function() {
+        if (editMode == 'add') {
+          for (var fId in editObj) {
+            var foodItem = food[fId];
+
+            var lastItem = (foodItem.items || []).slice(-1);
+            if (foodItem.items.length == 0 || lastItem.bought != date.getTime()) {
+              foodItem.items.push({
+                bought: date.getTime(),
+                amount: editObj[fId]
+              });
+              updateFood(fId);
+            } else {
+              lastItem.amount += editObj[fId];
+            }
+          }
+        } else if (editMode == 'remove') {
+          // Bringing down the amount of a closed pack should open it if opened as a pack, or if not as a pack and a fraction is left, go for it.
+          for (var fId in editObj) {
+            var foodItem = food[fId];
+            if (foodItem.items.length == 0) continue;
+
+            var openInPack = foodItem.expireDaysAfterOpen != null && foodItem.packAmount != null && !!foodItem.openInPack;
+            var stepAmt = openInPack ? foodItem.packAmount : 1;
+
+            var amountLeft = editObj[fId];
+            foodItem.items.map(function(item) {
+              if (amountLeft > 0) {
+                if (amountLeft < item.amount) {
+                  item.amount -= amountLeft;
+                  amountLeft = 0;
+                  if (item.opened == null && amountLeft < stepAmt) {
+                    // If closed, and amount left is less than amt in pack or self, then bump out into its own opened thing. Leave a multiple of stepAmt
+                    var bumpAmt = item.amount % stepAmt;
+                    if (bumpAmt == 0) {
+                      item.opened = date.getTime();
+                    } else {
+                      item.amount -= bumpAmt;
+                      foodItem.items.unshift({
+                        bought: item.bought,
+                        amount: bumpAmt,
+                        opened: date.getTime()
+                      });                      
+                    }
+                  }
+                } else {
+                  amountLeft -= item.amount;
+                  item.amount = 0;
+                }
+              }
+            });
+
+            foodItem.items = foodItem.items.filter((n) => n.amount > 0);
+
+            updateFood(fId);
+          }
+        }
+
+        editObj = {};
+        refresh();
+        $('#editModal').modal('hide');
+      });
+
+      $('.editListRemove').unbind('click').click(function() {
+        var id = getProp(this, 'id');
+        delete editObj[id];
+        refreshEditModal();
+      });
+
+      $('.editListAmount').unbind('input').on('input', function() {
+        var id = getProp(this, 'id');
+        var amount = parseFloat($(this).val());
+        if (isNaN(amount) || amount < 0) return;
+        editObj[id] = amount;
+        if (amount == 0) delete editObj[id];
+      });
+
+    };
+
+    getSubItemDaysToExpire = function(subItem, fId) {
+      var expireDays = [];
+
+      var item = food[fId];
+      if (item.expireDaysAfterOpen != null && subItem.opened != null) {
+        var openedDate = new Date(subItem.opened);
+        var daysSinceOpened = (Date.now() - openedDate.getTime()) / day;
+        expireDays.push(Math.floor(item.expireDays - daysSinceOpened));
+      }
+
+      if (item.expireDays != null) {
+        var boughtDate = new Date(subItem.bought);
+        var daysSinceBought = (Date.now() - boughtDate.getTime()) / day;
+        expireDays.push(Math.floor(item.expireDays - daysSinceBought));
+      }
+
+      if (expireDays.length == 0) return 0;
+      return _.min(expireDays);
+    };
+
+    getDaysToExpire = function(fId) {
+      var item = food[fId];
+      if (item.expireDays == null) return 1e6; // Won't expire for a long time
+
+      return _.min(item.items.map(function(subItem) {
+        return getSubItemDaysToExpire(subItem, fId);
+      }));
+    };
+
+    var dateInput = function(fId, subIndex, type) {
+      var item = food[fId];
+      var subItem = item.items[subIndex];
+      var subItemDate = new Date(subItem[type]);
+      var dateText = (subItemDate.getMonth()+1)+'/'+(subItemDate.getDate());
+
+      return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><span class="dateInput">'+dateText+'</span><input type="text"'+
+        'data-date-format="mm/dd" data-language="en" '+
+        'class="datepicker-here" '+
+        'data-position="bottom right" '+
+        'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"></span>';
+    };
+
+    var refresh = function() {
+      $('.tabText').removeClass('custom-underline');
+      $('.tab[data-tab="'+tab+'"]').find('.tabText').addClass('custom-underline');
+
+      $('#foodSection').toggle(tab == 'food');
+      $('#mealSection').toggle(tab == 'meals');
+      $('#grocerySection').toggle(tab == 'grocery');
+      if (tab == 'food') {
+        $('#filter').css('width', 'calc(100% - 80px)')
+      } else if (tab == 'meals') {
+        $('#filter').css('width', 'calc(100% - 215px)')
+      } else {
+        $('#filter').css('width', '100%')
+      }
+      $('#filter, #newItem').css('display', tab != 'grocery' ? 'inline-block' : 'none');
+      $('#mealType').css('display', tab == 'meals' ? 'inline-block' : 'none');
+
+      $('#groceryList, #addGrocerySection').toggle(groceryMode == 'buy')
+      $('#goalList, #addGoalSection').toggle(groceryMode == 'goals');
+
+      if (tab == 'food') {
+
+        $('#foodList').empty();
+        var foodList = _.values(food).filter(function(item) {
+          if (query.trim().length == 0) return true;
+          return item.name.toLowerCase().indexOf(query.toLowerCase()) >= 0;
+        });
+        foodList = _.sortBy(foodList, function(item) {
+          if (item.items.length == 0) return 1e7; // Put at bottom of list
+          return getDaysToExpire(item.id);
+        }).map(function(item) {
+          $('#foodList').append($(''+
+            '<div data-id="'+item.id+'" class="foodRow">'+
+            '  <div class="foodEdit">'+
+            '    <h6 style="display: inline-block; width: calc(100% - 30px);'+(item.items.length == 0 ? 'color: grey;' : '')+'">'+item.name+'</h6>'+
+            '    <span class="icon-pencil" style="margin-right: 5px; float: right;"></span>'+
+            '  </div>'+
+            '  <div>'+
+            item.items.map(function(subItem, sub_i) {
+              var daysToExpire = getSubItemDaysToExpire(subItem, item.id);
+    
+              var boughtDate = new Date(subItem.bought);
+              var openedDate = subItem.opened != null ? new Date(subItem.opened) : null;
+
+              var expireNote = null;
+              if (item.expireDays != null || (item.expireDaysAfterOpen != null && subItem.opened != null)) {
+                if (daysToExpire > 0) {
+                  // Math.round(item.expireDays - daysSinceBought)
+                  expireNote = '<h6 style="display: inline-block; color: grey; margin-right: 5px;">(bad in '+daysToExpire+' days)</h6>'
+                } else {
+                  var expireDate = new Date(Date.now() + daysToExpire * day);
+                  expireNote = '<h6 style="display: inline-block; color: #e60606; margin-right: 5px;">(went bad on ' + (expireDate.getMonth()+1)+'/'+(expireDate.getDate()) + ')</h6>'
+                }
+              }
+
+              return ''+
+              '<div class="itemRow" data-subIndex="'+sub_i+'">'+
+              '  <input class="form-control amtInput subItemAmt" style="" value="'+subItem.amount+'" type="number">'+
+              '<h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from '+dateInput(item.id, sub_i, 'bought')+'</h6>'+
+              (subItem.opened != null ? 
+              '<h6 style="display: inline-block;margin-left: 0px;"> opened '+dateInput(item.id, sub_i, 'opened')+'</h6>' : '')+
+              (expireNote != null ? expireNote : '')+
+              '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span>'+
+              ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;margin-top: 8px;padding-bottom: 2px;padding-top: 2px; margin-left: 10px;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
+              '</div>';
+            }).join('')+
+            '  </div>'+
+            '</div>'));
+        });
+
+        $('.subItemAmt').unbind('input').on('input', function() {
+          var fId = getProp(this, 'id');
+          var subIndex = parseInt(getProp(this, 'subIndex'));
+          var amount = parseFloat($(this).val())
+          if (isNaN(amount) || amount < 0) return;
+          food[fId].items[subIndex].amount = amount;
+          updateFood(fId);
+        });
+
+        $('.subItemOpen').unbind('click').on('click', function() {
+          var fId = getProp(this, 'id');
+          var subIndex = parseInt(getProp(this, 'subIndex'));
+          var foodItem = food[fId];
+          var subItem = foodItem.items[subIndex];
+
+          // Check if open in packs
+          var openInPack = foodItem.expireDaysAfterOpen != null && foodItem.packAmount != null && !!foodItem.openInPack;
+          var stepAmt = openInPack ? foodItem.packAmount : 1;
+
+          var existingOpenItem = null;
+          foodItem.items.map(function(subItem2) {
+            if (existingOpenItem == null && subItem2.opened == date.getTime() && subItem2.bought == subItem.bought) {
+              existingOpenItem = subItem2;
+            }
+          });
+
+          if (existingOpenItem != null) {
+            existingOpenItem.amount += stepAmt;
+            subItem.amount -= stepAmt;
+            if (subItem.amount == 0) foodItem.items.splice(subIndex, 1);
+          } else {
+            if (subItem.amount <= stepAmt) {
+              subItem.opened = date.getTime();
+            } else {
+              subItem.amount -= stepAmt;
+              foodItem.items.unshift({
+                bought: subItem.bought,
+                amount: stepAmt,
+                opened: date.getTime()
+              });
+            }
+          }
+
+          updateFood(fId);
+          refresh();
+        });
+
+        $('.itemRemove').unbind('click').click(function() {
+          var fId = getProp(this, 'id');
+          var subIndex = parseInt(getProp(this, 'subIndex'));
+          food[fId].items.splice(subIndex, 1);
+          updateFood(fId);
+          refresh();
+        });
+
+        $('.datepicker-here').datepicker({
+          language: 'en',
+          autoClose: true,
+          maxDate: new Date(),
+          onSelect: function(dateText, dateObj, e) {
+            var dateTime = dateObj.getTime();
+            var fId = getProp(arguments[2].el, 'id');
+            var subIndex = parseInt(getProp(arguments[2].el, 'subIndex'));
+            var type = getProp(arguments[2].el, 'type');
+            food[fId].items[subIndex][type] = dateTime;
+            var subItem = food[fId].items[subIndex];
+
+            if (subItem.opened != null && subItem.opened < subItem.bought) delete subItem.opened;
+
+            food[fId].items = _.sortBy(food[fId].items, function(subItem) {
+              return getSubItemDaysToExpire(subItem, fId);
+            });
+            updateFood(fId);
+            refresh();
+          }
+        });
+
+        $('.dateInput').unbind('click').click(function() {
+          var datepicker = $(this).parent().find('.datepicker-here').datepicker().data('datepicker');
+          datepicker.show();
+        });
+      }
+
+      var mealList = _.values(meals);
+
+      if (tab == 'meals') {
+
+        $('#mealType').val(mealType);
+        $('#mealType').unbind('change').on('change', function() {
+          mealType = $(this).val();
+          refresh();
+        })
+
+        var getMaxMeals = function(mealItem) {
+          if (keys(mealItem.food).length == 0) {
+            var maxMeals = 0;
+          } else {
+            var maxMeals = Math.floor(_.min(keys(mealItem.food).map(function(fId) {
+              // If an item has gone bad, don't include it in amount
+              var daysToExpire = getDaysToExpire(fId);            
+              if (daysToExpire < 0) return 0;
+
+              return _.sum(food[fId].items.map(a.prop('amount'))) / mealItem.food[fId];
+            })));
+          }
+          return maxMeals;
+        }
+
+        $('#mealList').empty();
+        _.orderBy(mealList.filter(function(item) {
+          // Query filter
+          if (query.trim().length == 0) return true;
+          return item.name.toLowerCase().indexOf(query.toLowerCase()) >= 0;
+        }).filter(function(item) {
+          // Type filter
+          if (mealType == 'all') return true;
+          return item.types[mealType] != null;
+        }), [function(item) {
+          return getMaxMeals(item) > 0 ? -1 : 0;
+        }, function(mealItem) {
+          // How long until goes bad.
+          if (keys(mealItem.food).length == 0) {
+            return -1e8;
+          } else {
+            return _.min(keys(mealItem.food).map(function(fId) {
+              return getDaysToExpire(fId);
+            }));
+          }
+        }, function(mealItem) {
+          return -getMaxMeals(mealItem);
+        }]).map(function(item) {
+          // Number of meals available
+
+          // Find the limiting factor for each ingredient
+          var maxMeals = getMaxMeals(item);
+          var minTimeToExpire = _.min(keys(item.food).map(function(fId) {
+            return getDaysToExpire(fId);
+          }));
+          var expireText = '';
+          if (minTimeToExpire != null && minTimeToExpire < 1e6 && maxMeals > 0) {
+            expireText = '<span style="color: grey;">(bad in ' + minTimeToExpire + ' days)</span>';
+          } 
+
+          $('#mealList').append($(''+
+            '<div data-id="'+item.id+'" class="mealRow">'+
+            '  <div class="mealEdit" style="'+(maxMeals == 0 ? 'color:grey;' : '')+'">'+
+            '    <h6 style="display: inline-block; margin-bottom: 0px; width: calc(100% - 30px);">'+item.name+' for '+item.serves+' (x'+maxMeals+') '+expireText+'</h6>'+
+            '    <span class="icon-pencil" style="margin-right: 5px; float: right;"></span>'+
+            '  </div>'+
+            '</div>'));
+        });
+      }
+
+      if (tab == 'grocery') {
+
+        $('#groceryList, #goalList').empty();
+          
+        var groceryList = {}; // key == store, value = {'fId'}
+
+        mealList.map(function(item) {
+          if (item.stock == null || item.stock == 0) return;
+
+          $('#goalList').append($(''+
+            '<div data-id="'+item.id+'" class="goalRow">'+
+            '  <input class="form-control amtInput goalInput" style="" value="'+item.stock+'" type="number">'+
+            '  <h6 style="display: inline-block;margin-bottom: 0px;margin-left: 5px;vertical-align: top;margin-top: 4px;">'+item.name+'</h6>'+
+            '  <span class="icon-pencil mealEdit" style="margin-left: 7px; display: inline-block;vertical-align: top;margin-top: 6px;"></span>'+
+            '  <span class="icon-remove goalRemove" style="margin-right: 10px; float: right; font-size: 20px; margin-top: 3px;"></span>'+
+            '</div>'));
+
+          for (var fId in item.food) {
+            var fItem = food[fId];
+            if (fItem.store == null) continue;
+            groceryList[fItem.store] = groceryList[fItem.store] || {};
+            if (groceryList[fItem.store][fItem.id] == null) groceryList[fItem.store][fItem.id] = 0;
+            groceryList[fItem.store][fItem.id] += item.stock * item.food[fId];    
+          }
+        });
+
+        $('.goalInput').unbind('input').on('input', function() {
+          var mId = getProp(this, 'id');
+          var mItem = meals[mId];
+          var amount = parseInt($(this).val());
+          if (mItem == null || isNaN(amount) || amount < 0) return;
+          mItem.stock = amount;
+          if (amount == 0) delete mItem.stock;
+          updateMeal(mId);
+        });
+
+        $('.goalRemove').unbind('click').on('click', function() {
+          var mId = getProp(this, 'id');
+          var mItem = meals[mId];
+          delete mItem.stock;
+          updateMeal(mId);
+          refresh();
+        });
+
+        for (var store in groceryCart) groceryList[store] = groceryList[store] || {};
+
+        var totalNum = 0;
+
+        keys(groceryList).map(function(store, i) {
+          $('#groceryList').append($('<h5 style="margin-top: '+(i == 0 ? 10 : 40)+'px; text-decoration: underline;">'+store+' List</h5>'));
+          var totalCost = 0;
+
+          for (var fId in groceryList[store]) {
+            // Recognize that things which are sold in packs should be described as a pack
+
+            var text = '';
+            text += 'Got <input class="form-control groceryInput" style="width: 60px; display: inline-block; height: 32px; margin-left: 2px;" placeholder="#" ';
+            if (groceryCart[store] != null && groceryCart[store][fId] != null) {
+              totalNum += groceryCart[store][fId];
+              text += 'value="'+groceryCart[store][fId]+'"';
+            }
+            text += '> - ';            
+
+            var amountNeeded = groceryList[store][fId];
+            if (food[fId].packAmount != null) {
+              var num = Math.ceil(amountNeeded/food[fId].packAmount);
+              text += 'Need ' + num + ' Pack'+(num != 1 ? 's' : '')+' of ' + food[fId].name;
+            } else {
+              var num = Math.ceil(amountNeeded);
+              text += 'Need ' + num + ' ' + food[fId].name;
+            }
+
+            if (food[fId].cost != null) {
+              if (groceryCart[store] != null && groceryCart[store][fId] != null) {
+                totalCost += food[fId].cost * groceryCart[store][fId];
+              }
+              text += '<span style="color: grey;"> ($' + roundToDecimals(food[fId].cost * num, 2) + ')</span>';
+            }
+
+            text += '<span class="icon-pencil foodEdit" style="margin-left: 10px;"></span>';
+
+            $('#groceryList').append($('<h6 data-id="'+fId+'" data-store="'+store+'">'+text+'</h6>')); 
+          }
+
+          for (var fId in groceryCart[store]) {
+            if (groceryList[store][fId] == null) {
+              $('#groceryList').append($(''+
+                '<h6 data-store="'+store+'" data-id="'+fId+'">Got <input class="form-control groceryInput" style="width: 60px;display: inline-block;height: 32px;" placeholder="#" value="'+(groceryCart[store][fId] > 0 ? groceryCart[store][fId] : '')+'"> + '+
+                (food[fId].packAmount != null ? 'Packs of ' : '')+food[fId].name+
+                (food[fId].cost != null ? '<span style="color: grey;"> ($' + food[fId].cost + ')</span>' : '')+
+                '<span class="icon-remove groceryRemove" style="margin-left: 10px;"></span>'+
+                '<span class="icon-pencil foodEdit" style="margin-left: 15px;"></span>'+
+                '</h6>'));        
+
+              totalNum += groceryCart[store][fId];
+              if (food[fId].cost != null) totalCost += food[fId].cost * groceryCart[store][fId];
+            }
+          }
+
+          $('#groceryList').append($('<h6 class="totalCost" data-store="'+encodeURIComponent(store)+'" style="margin-top: 10px; color: green; display: '+(totalCost != 0 ? 'inline-block' : 'none')+';">Total Cost: $'+roundToDecimals(totalCost, 2)+'</h6>'));
+        });
+
+        $('.groceryInput').unbind('input').on('input', function() {
+          var id = getProp(this, 'id');
+          var store = getProp(this, 'store');
+          var amount = parseInt($(this).val());
+          if ($(this).val().trim().length == 0) amount = 0;
+          if (isNaN(amount) || amount < 0) return;
+
+          groceryCart[store] = groceryCart[store] || {};
+          groceryCart[store][id] = amount;
+
+          var totalCost = 0;
+          for (var fId in groceryList[store]) {
+            if (groceryCart[store] != null && groceryCart[store][fId] != null && food[fId].cost != null) {
+              totalCost += food[fId].cost * groceryCart[store][fId];
+            }
+          }
+          for (var fId in groceryCart[store]) {
+            if (groceryList[store][fId] == null) {
+              if (food[fId].cost != null) totalCost += food[fId].cost * groceryCart[store][fId];
+            }
+          }
+
+          var totalNum = 0;
+          keys(groceryList).map(function(store) {
+            for (var fId in groceryList[store]) {
+              if (groceryCart[store] != null && groceryCart[store][fId] != null) {
+                totalNum += groceryCart[store][fId];
+              }
+            }
+
+            for (var fId in groceryCart[store]) {
+              if (groceryList[store][fId] == null) {
+                totalNum += groceryCart[store][fId];
+              }
+            }
+          });
+          
+          $('#addAllFoodList').text('Add All '+totalNum+' to Food List').toggle(totalNum > 0);
+          $('.totalCost[data-store="'+encodeURIComponent(store)+'"]').text('Total Cost: $'+roundToDecimals(totalCost, 2)).toggle(totalCost > 0);
+        });
+
+        $('.groceryRemove').unbind('click').on('click', function() {
+          var fId = getProp(this, 'id');
+          var store = getProp(this, 'store');
+          delete groceryCart[store][fId];
+          if (empty(groceryCart[store])) delete groceryCart[store];
+          refresh();
+        });
+
+        $('#groceryList').append($('<br>'));
+        $('#groceryList').append($('<h6 id="addAllFoodList" class="btn btn-primary btn-sm" style="margin-top: 10px; display: '+(totalNum > 0 ? 'inline-block' : 'none')+';">Add All '+totalNum+' to Food List</h6>'));
+
+        $('#addAllFoodList').unbind('click').click(function() {
+          console.log(groceryCart);
+          editObj = {};
+          for (var store in groceryCart) {
+            for (var fId in groceryCart[store]) {
+              if (editObj[fId] == null) editObj[fId] = 0;
+              editObj[fId] += groceryCart[store][fId];
+            }
+          }
+          editMode = 'add';
+          refreshEditModal();
+          $('#editModal').modal('show');
+          setTimeout(function() {
+            setMaxHeight('#editModal');
+          }, 200);
+        });
+
+        $('.groceryMode').removeClass('btn-dark').addClass('btn-light');
+        $('.groceryMode[data-type="'+groceryMode+'"]').toggleClass('btn-dark').removeClass('btn-light');
+      }
+
+      $('.foodEdit').unbind('click').click(function() {
+        foodId = getProp(this, 'id');
+        editFoodObj = clone(food[foodId]);
+        refreshFoodModal();
+        $('#foodModal').modal('show');
+        setTimeout(function() {
+          setMaxHeight('#foodModal');
+        }, 200);
+      });
+
+      $('.mealEdit').unbind('click').click(function() {
+        mealId = getProp(this, 'id');
+        editMealObj = clone(meals[mealId]);
+        refreshMealModal();
+        $('#mealModal').modal('show');
+        setTimeout(function() {
+          setMaxHeight('#mealModal');
+        }, 200);
+      });
+    }
+
+    jsonpg.setKey('gavinovsak', 'QaMtKn7p9yDuctl');
+
+    $(function() {
+      refresh();
+
+      jsonpg.watch({ path: 'gavinovsak.food', frequency: 2000}, function(data) {
+        console.log('got data', data);
+        if (data == null) return;
+
+        food = data.food || {};
+        meals = data.meals || {};
+        refresh();
+
+        // jsonpg.set('gavinovsak.food.food.f5', null, function(data) {
+        //   console.log('callback', data)
+        // })
+      });
+
+      $('#filter').unbind('input').on('input', function() {
+        query = $(this).val();
+        refresh();
+      });
+
+      $('.groceryMode').unbind('click').click(function() {
+        groceryMode = getProp(this, 'type');
+        refresh();
+      })
+
+      $('.tab').unbind('click').click(function() {
+        tab = getProp(this, 'tab');
+        refresh();
+      });
+
+      $('#addRemoveToggle').unbind('click').click(function() {
+        editObj = {};
+        refreshEditModal();
+        $('#editModal').modal('show');
+        setTimeout(function() {
+          setMaxHeight('#editModal');
+        }, 200);
+      });
+
+      $('.datepicker-here').datepicker({
+        language: 'en',
+        autoClose: true,
+        maxDate: new Date()
+      });
+
+      $('#newItem').unbind('click').click(function() {
+        if (tab == 'food') {
+          editFoodObj = {
+            name: '',
+            items: []
+          }
+          foodId = null;
+          refreshFoodModal();
+          $('#foodModal').modal('show');
+          setTimeout(function() {
+            setMaxHeight('#foodModal');
+          }, 200);
+        } else if (tab == 'meals') {
+          editMealObj = {
+            name: '',
+            serves: 2,
+            food: {}
+          }
+          mealId = null;
+          refreshMealModal();
+          $('#mealModal').modal('show');
+          setTimeout(function() {
+            setMaxHeight('#mealModal');
+          }, 200);
+        }
+      });
+
+      $('#foodSave').unbind('click').click(function() {
+        $('#foodModal').modal('hide');
+        if (editFoodObj.id == null) editFoodObj.id = getNewId(food, 'f');
+        food[editFoodObj.id] = editFoodObj;
+        updateFood(editFoodObj.id);
+        refresh();
+      });
+
+      $('#foodDelete').unbind('click').click(function() {
+        $('#foodModal').modal('hide');
+        if (editFoodObj.id == null) return;
+        delete food[editFoodObj.id];
+        updateFood(editFoodObj.id);
+        refresh();
+      });
+
+      $('#mealSave').unbind('click').click(function() {
+        $('#mealModal').modal('hide');
+        if (editMealObj.id == null) editMealObj.id = getNewId(meals, 'm');
+        meals[editMealObj.id] = editMealObj;
+        updateMeal(editMealObj.id);
+        refresh();
+      });
+
+      $('#mealDelete').unbind('click').click(function() {
+        $('#mealModal').modal('hide');
+        if (editMealObj.id == null) return;
+        delete meals[editMealObj.id];
+        updateMeal(editMealObj.id);
+        refresh();
+      });
+
+      var addGoalSectionBox = new Awesomplete($('#addGoalSection')[0], {
+        list: keys(meals).map(function(mId) {
+          return { label: meals[mId].name, value: mId };
+        }),
+        replace: function() {
+          $('#addGoalSection').val('');
+        },
+        minChars: 1,
+        autoFirst: true,
+        maxItems: 8
+      });
+      $('#addGoalSection').parent().css('width', '100%');
+      $('#addGoalSection').on('awesomplete-selectcomplete', function(e) {
+        var mId = e.originalEvent.text.value;
+        if (meals[mId].stock == null) meals[mId].stock = 0;
+        meals[mId].stock++;
+        updateMeal(mId);
+        refresh();
+      });
+
+      var addGrocerySectionBox = new Awesomplete($('#addGrocerySection')[0], {
+        list: keys(food).map(function(fId) {
+          return { label: food[fId].name, value: fId }
+        }),
+        replace: function() {
+          $('#addGrocerySection').val('')
+        },
+        minChars: 1,
+        autoFirst: true,
+        maxItems: 8
+      });
+      $('#addGrocerySection').parent().css('width', '100%');
+      $('#addGrocerySection').on('awesomplete-selectcomplete', function(e) {
+        var fId = e.originalEvent.text.value;
+        var foodItem = food[fId];
+        if (foodItem.store == null) return;
+        groceryCart[foodItem.store] = groceryCart[foodItem.store] || {};
+        if (groceryCart[foodItem.store][fId] == null) groceryCart[foodItem.store][fId] = 0;
+        groceryCart[foodItem.store][fId]++;
+        refresh();
+      });
+
+      var mealContentAddSectionBox = new Awesomplete($('#mealContentAddSection')[0], {
+        list: keys(food).map(function(fId) {
+          return { label: food[fId].name, value: fId }
+        }),
+        replace: function() {
+          $('#mealContentAddSection').val('')
+        },
+        minChars: 1,
+        autoFirst: true,
+        maxItems: 8
+      });
+      $('#mealContentAddSection').parent().css('width', '100%').css('font-size', '17px');
+      $('#mealContentAddSection').on('awesomplete-selectcomplete', function(e) {
+        editMealObj.food[e.originalEvent.text.value] = 1;
+        refreshMealModal();
+      });
+
+      var editLookUpBox = new Awesomplete($('#editLookUp')[0], {
+        list: keys(food).map(function(fId) {
+          return { label: food[fId].name + ' (Food)', value: fId }
+        }).concat(keys(meals).filter(function(mId) {
+          return keys(meals[mId].food).length > 1;
+        }).map(function(mId) {
+          return { label: meals[mId].name + ' (Meal)', value: mId }
+        })),
+        replace: function() {
+          $('#editLookUp').val('')
+        },
+        minChars: 1,
+        autoFirst: true,
+        maxItems: 8
+      });
+      $('#editLookUp').parent().css('width', '100%').css('font-size', '17px');
+      $('#editLookUp').on('awesomplete-selectcomplete', function(e) {
+        var id = e.originalEvent.text.value;
+        if (food[id] != null) {
+          if (editObj[id] == null) editObj[id] = 0;
+          editObj[id] += 1;
+        } else if (meals[id] != null) {
+          for (var fId in meals[id].food) {
+            if (editObj[fId] == null) editObj[fId] = 0;
+            editObj[fId] += meals[id].food[fId];
+          }
+        }
+        refreshEditModal();
+      });
+
+      var allStores = _.uniq(_.values(food).map(a.prop('store')));
+      var foodStoreBox = new Awesomplete($('#foodStore')[0], {
+        list: allStores, 
+        minChars: 1,
+        autoFirst: true,
+        maxItems: 8
+      });
+      $('#foodStore').parent().css('width', '200px').css('display', 'inline-block').css('font-size', '17px');
+
+      var oldWidth = $(window).width();
+      $(window).on('resize', function() {
+        if ($(window).width() != oldWidth) {
+          // refreshSection();
+          oldWidth = $(window).width();
+        }
+        ['#foodModal', '#mealModal', '#editModal'].map(setMaxHeight);
+      });
+    })
+
+  </script>
+  <div class="container" style="position: relative;height: 100%; width: 100%; max-width: 650px;">
+    <div style="background-color: white; width: 100%;">
+      <h5 id="addRemoveToggle" class="btn btn-primary btn-sm" style="display: inline-block; vertical-align: top;margin-top: 10px;">Add or Eat</h5>
+      <div style="width: 430px; display: inline-block;max-width: 100%;">
+        <div id="mainTabSection" style="display: flex;flex-direction: row;flex-wrap: wrap;align-items: flex-start;padding-bottom: 2px;margin-left: 10px;">
+          <h5 class="tab" data-tab="food"><span class="tabText custom-underline-blue">Food</span></h5>
+          <h5 class="tab" data-tab="meals"><span class="tabText custom-underline-green custom-underline">Meals</span></h5>
+          <h5 class="tab" data-tab="grocery"><span class="tabText custom-underline-orange">Grocery List</span></h5>
+        </div>
+      </div>
+    </div>
+    <div style="padding-top: 10px;">
+      <select id="mealType" class="form-control" style="width: auto;height: 37px; vertical-align: top;display: none;">
+        <option value="all">All Meals</option>
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="snacks">Snacks</option>
+        <option value="dinner">Dinner</option>
+      </select>
+      <input id="filter" class="form-control" style="width: calc(100% - 140px); height: 37px; display: none;" placeholder="Filter">
+      <div id="newItem" class="btn btn-primary" style="height: 37px; vertical-align: top; padding-top: 4px; display: none;">New</div>
+    </div>
+    <div id="foodSection" style="padding-top: 10px; position: relative;height: calc(100% - 95px);display: none;;">
+      <div id="foodList" style="overflow-y: scroll; height: 100%; width: 100%;"></div>
+    </div>
+    <div id="mealSection" style="position: relative; height: calc(100% - 95px); display: none; margin-top: 10px;">
+      <div id="mealList" style="padding-top: 0px; overflow-y: scroll; height: 100%; width: 100%;"></div>
+    </div>
+    <div id="grocerySection" style="position: relative;height: calc(100% - 95px); display: none">
+      <div class="btn-group" role="group" style="margin-top: 0px;">
+        <button type="button" data-type="buy" class="btn btn-dark btn-sm groceryMode">To Buy</button>
+        <button type="button" data-type="goals" class="btn btn-light btn-sm groceryMode">Meal Goals</button>
+      </div>
+      <input id="addGrocerySection" style="margin-top: 15px;" type="text" class="form-control" placeholder="Add Food">
+      <div id="groceryList" style="padding-top: 0px; overflow-y: scroll; height: calc(100% - 60px); width: 100%; margin-top: 15px;"></div>
+      <input id="addGoalSection" style="margin-top: 15px;" type="text" class="form-control" placeholder="Add Meals">
+      <div id="goalList" style="padding-top: 0px; overflow-y: scroll; height: calc(100% - 130px); width: 100%; margin-top: 15px;">
+        <div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="foodModal" class="modal fade in" role="dialog" style="overflow-x: scroll; overflow-y: hidden">
+    <div class="modal-dialog" style="min-width: 300px; margin-top: 15px; overflow-y: initial !important;">
+      <div class="modal-content">
+        <div class="modal-header" style="">
+          <h5 style="margin-top: 0px; margin-bottom: 0px; float: left;">Edit Food</h5>
+          <span class="icon-remove" style="float: right; font-size: 22px;" data-dismiss="modal"></span>
+        </div>
+        <div class="modal-body" style="width: 100%; padding-top: 0px; margin-bottom: 20px; overflow-y: scroll; max-height: 570px; font-size: 15px; user-select: text;">
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Name:</h6>
+            <input id="foodName" placeholder="Food Name" class="form-control" style="width: 100%; display: inline-block; height: 35px; width: calc(100% - 80px);">
+          </div>
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 0px; vertical-align: top; margin-top: 7px;">Cost: $</h6>
+            <input id="foodCost" placeholder="$" class="form-control" style="display: inline-block; height: 35px; width: 80px;">
+          </div>
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Good For </h6>
+            <input id="foodExpireDays" placeholder="n/a" type="number" class="form-control" style="display: inline-block; height: 35px; width: 80px; margin-right: 5px;">
+            <h6 style="display: inline-block;">Days</h6>
+          </div>
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Store:</h6>
+            <input id="foodStore" class="form-control" style="display: inline-block; height: 35px; width: 200px; margin-right: 5px;">
+          </div>
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Amount In A Pack:</h6>
+            <input id="foodPackAmount" placeholder="n/a" type="number" class="form-control" style="display: inline-block; height: 35px; width: 80px;">
+          </div>
+          <h6 style="margin-top: 40px; font-style: italic;">If Opening Affects Expiration:</h6>
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Good For </h6>
+            <input id="foodExpireDaysAfterOpened" placeholder="n/a" type="number" class="form-control" style="display: inline-block; height: 35px; width: 80px; margin-right: 5px;">
+            <h6 style="display: inline-block;">Days After Opened</h6>
+          </div>
+          <div style="margin-top: 20px;" id="foodOpenedAsPackSection">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Opened As A Pack: </h6>
+            <div class="btn-group" role="group" style="margin-top: 0px; margin-left: 10px;">
+              <button type="button" data-type="Yes" class="btn btn-success btn-sm foodOpenedAsPack">Yes</button>
+              <button type="button" data-type="No" class="btn btn-light btn-sm foodOpenedAsPack">No</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="">
+          <div id="foodSave" class="btn btn-sm btn-success" style="float: right;">Save</div>
+          <div id="foodDelete" class="btn btn-sm btn-danger" style="float: right;">Delete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mealModal" class="modal fade in" role="dialog" style="overflow-x: scroll; overflow-y: hidden">
+    <div class="modal-dialog" style="min-width: 300px; margin-top: 15px; overflow-y: initial !important;">
+      <div class="modal-content">
+        <div class="modal-header" style="">
+          <h5 style="margin-top: 0px; margin-bottom: 0px; float: left;">Edit Meal</h5>
+          <span class="icon-remove" style="float: right; font-size: 22px;" data-dismiss="modal"></span>
+        </div>
+        <div class="modal-body" style="width: 100%; padding-top: 0px; overflow-y: scroll; max-height: 570px; font-size: 15px; user-select: text;">
+          <div style="margin-top: 20px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Name:</h6>
+            <input id="mealName" placeholder="Meal Name" class="form-control" style="width: 100%; display: inline-block; height: 35px; width: calc(100% - 80px);">
+          </div>
+          <div style="margin-top: 20px; display: inline-block; margin-right: 10px;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Serves:</h6>
+            <input id="mealServes" placeholder="" type="number" class="form-control" style="display: inline-block; height: 35px; width: 80px;">
+          </div>
+          <div style="margin-top: 20px; display: inline-block;">
+            <h6 style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Stock:</h6>
+            <input id="mealStock" placeholder="None" type="number" class="form-control" style="display: inline-block; height: 35px; width: 100px;">
+          </div>
+          <div style="margin-top: 15px;">
+            <h6>Notes:</h6>
+            <textarea id="mealNotes" type="number" class="form-control" style="width: 100%; display: inline-block; height: 15px; min-height: 60px;"></textarea>
+          </div>
+          <div style="margin-top: 10px;">
+            <div style="display: inline-block;margin-right: 10px;">
+              <input class="mealTypeCheck" data-type="breakfast" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Breakfast</h6>
+            </div>
+            <div style="display: inline-block;margin-right: 10px;">
+              <input class="mealTypeCheck" data-type="lunch" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Lunch</h6>
+            </div>
+            <div style="display: inline-block;margin-right: 10px;">
+              <input class="mealTypeCheck" data-type="dinner" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Dinner</h6>
+            </div>
+            <div style="display: inline-block;margin-right: 10px;">
+              <input class="mealTypeCheck" data-type="snack" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Snack</h6>
+            </div>
+          </div>
+          <h6 style="margin-top: 15px;">Contents:</h6>
+          <div id="mealContents">
+            <div style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">
+              <input class="form-control" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" type="number">
+              <h6 style="display: inline-block;">Name</h6>
+              <span class="icon-remove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>
+            </div>
+            <div style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">
+              <input class="form-control" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" type="number">
+              <h6 style="display: inline-block;">Name</h6>
+              <span class="icon-remove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>
+            </div>
+          </div>
+          <input id="mealContentAddSection" style="margin-top: 10px;" type="text" class="form-control" placeholder="Add Food">
+          <div style="margin-top: 20px; margin-bottom: 15px; display: inline-block;">
+            <h6 id="mealCost" style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Total Cost: $2.99</h6>
+          </div>
+        </div>
+        <div class="modal-footer" style="">
+          <div id="mealSave" class="btn btn-sm btn-success" style="float: right;">Save</div>
+          <div id="mealDelete" class="btn btn-sm btn-danger" style="float: right;">Delete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal fade in" role="dialog" style="overflow-x: scroll; overflow-y: hidden">
+    <div class="modal-dialog" style="min-width: 300px; margin-top: 15px; overflow-y: initial !important;">
+      <div class="modal-content">
+        <div class="modal-header" style="">
+          <h5 style="margin-top: 0px; margin-bottom: 0px; float: left;">Add or Eat Food</h5>
+          <span class="icon-remove" style="float: right; font-size: 22px;" data-dismiss="modal"></span>
+        </div>
+        <div class="modal-body" style="width: 100%; margin-bottom: 0px; overflow-y: scroll; max-height: 570px; font-size: 15px; user-select: text;">
+          <input id="editLookUp" class="form-control" placeholder="Look Up Food / Meal" style="display: inline-block; width: 100%; height: 40px; margin-right: 5px; margin-bottom: 5px;">
+          <div id="editList" style="min-height: 150px;">
+            <div style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">
+              <input class="form-control" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" type="number">
+              <h6 style="display: inline-block;">Name</h6>
+              <span class="icon-remove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>
+            </div>
+            <div style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">
+              <input class="form-control" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" type="number">
+              <h6 style="display: inline-block;">Name</h6>
+              <span class="icon-remove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="text-align: left; display: inline-block;">
+          <div class="btn-group" role="group" style="">
+            <button type="button" data-type="add" class="btn btn-sm editMode">Add</button>
+            <button type="button" data-type="remove" class="btn btn-sm editMode">Eat</button>
+          </div>
+          <div id="editSubmit" class="btn btn-sm btn-primary" style="float: right;">Save</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
