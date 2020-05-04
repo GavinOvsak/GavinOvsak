@@ -114,8 +114,11 @@ jsonpg.get = function(path, callback) {
   var postUserPath = joinPath(pathList.slice(1));
   var url = 'http://'+domain+'/'+pathList[0]+'/get?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key});
   $.getJSON(proxy(url), function(result) {
-    if (result == 'error') debugger
-    callback();
+    if (result == 'error') {
+      console.log(url);
+      debugger;
+    }
+    callback(result);
   });
 };
 
@@ -129,7 +132,7 @@ jsonpg.set = function(path, data, callback) {
       console.log(url);
       debugger;
     }
-    callback();
+    callback(result);
   });
 };
 
@@ -143,7 +146,7 @@ jsonpg.send = function(toUsername, title, data, callback) {
       console.log(url);
       debugger;
     }
-    callback();
+    callback(result);
   });
 };
 
@@ -157,7 +160,7 @@ jsonpg.push = function(path, data, callback) {
       console.log(url);
       debugger;
     }
-    callback();
+    callback(result);
   });
 };
 
@@ -171,6 +174,6 @@ jsonpg.getNum = function(path, callback) {
       console.log(url);
       debugger;
     }
-    callback();
+    callback(result);
   });
 };
