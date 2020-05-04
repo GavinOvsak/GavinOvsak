@@ -309,11 +309,11 @@
         editMealObj.serves = serves;
       });
 
-      if(!$('#mealStock').is(':focus')) $('#mealStock').val(item.stock);
+      if(!$('#mealStock').is(':focus')) $('#mealStock').val(item.stock == 0 ? '' : item.stock);
       $('#mealStock').unbind('input').on('input', function() {
         var stock = parseInt($(this).val())
-        if ($(this).val().trim().length == 0) delete editMealObj.stock;
-        if (isNaN(stock) || stock <= 0) return;
+        if ($(this).val().trim().length == 0) editMealObj.stock = 0;
+        if (isNaN(stock) || stock < 0) return;
         editMealObj.stock = stock;
       });
 
