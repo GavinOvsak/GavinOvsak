@@ -157,1095 +157,8 @@
     }
   </style>
   <script>
-    // var food = {
-    //   'f1': {
-    //     id: 'f1',
-    //     name: 'Hashbrowns',
-    //     packAmount: 12,
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 12
-    //     }]
-    //   },
-    //   'f2': {
-    //     id: 'f2',
-    //     name: 'Eggs',
-    //     packAmount: 12,
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.49,
-    //     expireDays: 20,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 16
-    //     }]
-    //   },
-    //   'f3': {
-    //     id: 'f3',
-    //     name: 'Shredded Cheddar',
-    //     store: 'Trader Joe\'s',
-    //     cost: 6.36,
-    //     expireDays: 20,
-    //     expireDaysAfterOpen: 6,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f4': {
-    //     id: 'f4',
-    //     name: 'Avocado',
-    //     store: 'Trader Joe\'s',
-    //     cost: 1.59,
-    //     expireDays: 14,
-    //     expireDaysAfterOpen: 5,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 3
-    //     }]
-    //   },
-    //   'f5': {
-    //     id: 'f5',
-    //     name: 'Tuscan Pane Bread Slices',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.49,
-    //     expireDays: 20,
-    //     packAmount: 17,
-    //     expireDaysAfterOpen: 20,
-    //     openInPack: true,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 17
-    //     }]
-    //   },
-    //   'f6': {
-    //     id: 'f6',
-    //     name: 'Noosa Yogurt',
-    //     store: 'Target',
-    //     packAmount: 4,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 4
-    //     }]
-    //   },
-    //   'f7': {
-    //     id: 'f7',
-    //     name: 'Eggo Waffles',
-    //     packAmount: 12,
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 8
-    //     }]
-    //   },
-    //   'f8': {
-    //     id: 'f8',
-    //     name: 'Shredded Mozzarella',
-    //     store: 'Trader Joe\'s',
-    //     cost: 4.29,
-    //     expireDays: 20,
-    //     expireDaysAfterOpen: 6,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f9': {
-    //     id: 'f9',
-    //     name: 'Ramen',
-    //     store: 'H Mart',
-    //     packAmount: 12,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 8
-    //     }]
-    //   },
-    //   'f10': {
-    //     id: 'f10',
-    //     name: 'Curry',
-    //     store: 'H Mart',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 3
-    //     }]
-    //   },
-    //   'f11': {
-    //     id: 'f11',
-    //     name: 'Breaded Chicken',
-    //     store: 'Trader Joe\'s',
-    //     cost: 7.99,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1.5
-    //     }]
-    //   },
-    //   'f12': {
-    //     id: 'f12',
-    //     name: 'Mac and Cheese Balls',
-    //     store: 'Trader Joe\'s',
-    //     cost: 3.99,
-    //     packAmount: 10,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 15
-    //     }]
-    //   },
-    //   'f13': {
-    //     id: 'f13',
-    //     name: 'Frozen Fruit',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f13': {
-    //     id: 'f13',
-    //     name: 'Almond Milk',
-    //     store: 'Trader Joe\'s',
-    //     expireDays: 18,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 0.8
-    //     }]
-    //   },
-    //   'f14': {
-    //     id: 'f14',
-    //     name: 'Wheat Flour',
-    //     store: 'H Mart',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 0.6
-    //     }]
-    //   },
-    //   'f15': {
-    //     id: 'f15',
-    //     name: 'Turkey',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 6,
-    //     cost: 2.99,
-    //     expireDays: 20,
-    //     expireDaysAfterOpen: 5,
-    //     openInPack: true,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 6
-    //     }]
-    //   },
-    //   'f16': {
-    //     id: 'f16',
-    //     name: 'Salad Lettuce',
-    //     store: 'Trader Joe\'s',
-    //     cost: 1.99,
-    //     expireDays: 14,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f17': {
-    //     id: 'f17',
-    //     name: 'Hummus',
-    //     store: 'Trader Joe\'s',
-    //     cost: 3.99,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f18': {
-    //     id: 'f18',
-    //     name: 'Carrots',
-    //     store: 'Trader Joe\'s',
-    //     expireDays: 20,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 0.8
-    //     }]
-    //   },
-    //   'f19': {
-    //     id: 'f19',
-    //     name: 'Bananas',
-    //     store: 'Trader Joe\'s',
-    //     cost: 0.19,
-    //     items: []
-    //   },
-    //   'f20': {
-    //     id: 'f20',
-    //     name: 'Chocolate Lava Cake',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 2,
-    //     items: []
-    //   },
-    //   'f21': {
-    //     id: 'f21',
-    //     name: 'Apple Blossoms',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.29,
-    //     packAmount: 2,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 2
-    //     }]
-    //   },
-    //   'f22': {
-    //     id: 'f22',
-    //     name: 'Oranges',
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 3
-    //     }]
-    //   },
-    //   'f23': {
-    //     id: 'f23',
-    //     name: 'Chocolate Covered Bananas',
-    //     store: 'Trader Joe\'s',
-    //     cost: 1.99,
-    //     items: []
-    //   },
-    //   'f24': {
-    //     id: 'f24',
-    //     name: 'Chocolate Covered Strawberries',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.29,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f25': {
-    //     id: 'f25',
-    //     name: 'Lentils',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f26': {
-    //     id: 'f26',
-    //     name: 'Pasta Macaroni',
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 2
-    //     }]
-    //   },
-    //   'f27': {
-    //     id: 'f27',
-    //     name: 'Alfredo Sauce',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f28': {
-    //     id: 'f28',
-    //     name: 'Mozzarella Cheese Ball',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.99,
-    //     expireDays: 10,
-    //     expireDaysAfterOpen: 4,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f29': {
-    //     id: 'f29',
-    //     name: 'Tomato Basil Marinara Sauce',
-    //     store: 'Trader Joe\'s',
-    //     cost: 1.79,
-    //     expireDays: 30,
-    //     expireDaysAfterOpen: 12,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f30': {
-    //     id: 'f30',
-    //     name: 'Asparagus',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.49,
-    //     expireDays: 12,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f31': {
-    //     id: 'f31',
-    //     name: 'Olive Oil',
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 0.5
-    //     }]
-    //   },
-    //   'f32': {
-    //     id: 'f32',
-    //     name: 'Meatballs',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 12,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 6
-    //     }]
-    //   },
-    //   'f33': {
-    //     id: 'f33',
-    //     name: 'Bimimbap',
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f34': {
-    //     id: 'f34',
-    //     name: 'Chicken Samosas',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 12,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 6
-    //     }]
-    //   },
-    //   'f35': {
-    //     id: 'f35',
-    //     name: 'Veggie Samosas',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 12,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 6
-    //     }]
-    //   },
-    //   'f36': {
-    //     id: 'f36',
-    //     name: 'Canned Tomatoes',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f37': {
-    //     id: 'f37',
-    //     name: 'Red Pepper',
-    //     store: 'Trader Joe\'s',
-    //     expireDays: 14,
-    //     items: []
-    //   },
-    //   'f38': {
-    //     id: 'f38',
-    //     name: 'Kung Pao Chicken',
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f39': {
-    //     id: 'f39',
-    //     name: 'Gnocchi',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f40': {
-    //     id: 'f40',
-    //     name: 'Spring Rolls',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 5,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 2
-    //     }]
-    //   },
-    //   'f41': {
-    //     id: 'f41',
-    //     name: 'Lasagna No Boil Pasta',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f42': {
-    //     id: 'f42',
-    //     name: 'Sweet Potato Fries',
-    //     store: 'Trader Joe\'s',
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 0.5
-    //     }]
-    //   },
-    //   'f43': {
-    //     id: 'f43',
-    //     name: 'Lemons',
-    //     store: 'Trader Joe\'s',
-    //     expireDays: 20,
-    //     items: [{
-    //       bought: 1587672212119,
-    //       amount: 2
-    //     }]
-    //   },
-    //   'f43': {
-    //     id: 'f43',
-    //     name: 'Gyro Meat',
-    //     store: 'Trader Joe\'s',
-    //     expireDaysAfterOpen: 5,
-    //     items: []
-    //   },
-    //   'f44': {
-    //     id: 'f44',
-    //     name: 'Blue Corn Tortilla Chips',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.99,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f45': {
-    //     id: 'f45',
-    //     name: 'Salsa',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.99,
-    //     expireDays: 25,
-    //     expireDaysAfterOpen: 18,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       opened: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f46': {
-    //     id: 'f46',
-    //     name: 'Rice',
-    //     store: 'Trader Joe\'s',
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 0.5
-    //     }]
-    //   },
-    //   'f47': {
-    //     id: 'f47',
-    //     name: 'Ketchup',
-    //     store: 'Trader Joe\'s',
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 0.5
-    //     }]
-    //   },
-    //   'f48': {
-    //     id: 'f48',
-    //     name: 'Salad Dressing',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f49': {
-    //     id: 'f49',
-    //     name: 'Tatziki Sauce',
-    //     store: 'Trader Joe\'s',
-    //     expireDaysAfterOpen: 7,
-    //     expireDays: 20,
-    //     items: []
-    //   },
-    //   'f50': {
-    //     id: 'f50',
-    //     name: 'Alfredo Pasta Pack',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f51': {
-    //     id: 'f51',
-    //     name: 'Pancake Mix',
-    //     store: 'Trader Joe\'s',
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 2
-    //     }]
-    //   },
-    //   'f52': {
-    //     id: 'f52',
-    //     name: 'Canned Soup',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f53': {
-    //     id: 'f53',
-    //     name: 'Bagels',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.29,
-    //     packAmount: 6,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 4
-    //     }]
-    //   },
-    //   'f54': {
-    //     id: 'f54',
-    //     name: 'Scone Mix',
-    //     store: 'Trader Joe\'s',
-    //     cost: 3.69,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f55': {
-    //     id: 'f55',
-    //     name: 'Cereal',
-    //     store: 'Trader Joe\'s',
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f56': {
-    //     id: 'f56',
-    //     name: 'Garlic',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 20,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 9
-    //     }]
-    //   },
-    //   'f57': {
-    //     id: 'f57',
-    //     name: 'Scallion Pancakes',
-    //     store: 'Trader Joe\'s',
-    //     packAmount: 4,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 3
-    //     }]
-    //   },
-    //   'f58': {
-    //     id: 'f58',
-    //     name: 'Raspberry Baton',
-    //     store: 'Trader Joe\'s',
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 2
-    //     }]
-    //   },
-    //   'f59': {
-    //     id: 'f59',
-    //     name: 'Ricotta',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.99,
-    //     expireDaysAfterOpen: 7, 
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f60': {
-    //     id: 'f60',
-    //     name: 'Decaf Coffee Cups',
-    //     store: 'Trader Joe\'s',
-    //     cost: 4.99,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f61': {
-    //     id: 'f61',
-    //     name: 'Cucumbers',
-    //     store: 'Trader Joe\'s',
-    //     cost: 1.99,
-    //     packAmount: 5,
-    //     expireDays: 12,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 5
-    //     }]
-    //   },
-    //   'f62': {
-    //     id: 'f62',
-    //     name: 'Sliced Smoked Gouda',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.99,
-    //     packAmount: 8,
-    //     expireDaysAfterOpen: 7,
-    //     openInPack: true,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 6
-    //     }]
-    //   },
-    //   'f63': {
-    //     id: 'f63',
-    //     name: 'Apple',
-    //     store: 'Trader Joe\'s',
-    //     cost: 0.69,
-    //     expireDays: 18,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 3
-    //     }]
-    //   },
-    //   'f64': {
-    //     id: 'f64',
-    //     name: 'Bolognese Sauce',
-    //     store: 'Trader Joe\'s',
-    //     cost: 3.29,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 3
-    //     }]
-    //   },
-    //   'f65': {
-    //     id: 'f65',
-    //     name: 'Chicken Broth',
-    //     store: 'Trader Joe\'s',
-    //     cost: 1.99,
-    //     expireDays: 30,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f66': {
-    //     id: 'f66',
-    //     name: 'Limeade',
-    //     store: 'Trader Joe\'s',
-    //     cost: 2.29,
-    //     expireDays: 20,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 0.8
-    //     }]
-    //   },
-    //   'f67': {
-    //     id: 'f67',
-    //     name: 'Orange Juice',
-    //     store: 'Trader Joe\'s',
-    //     expireDays: 14,
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 0.7
-    //     }]
-    //   },
-    //   'f68': {
-    //     id: 'f68',
-    //     name: 'Spinach Tortellini',
-    //     store: 'Trader Joe\'s',
-    //     items: [{  
-    //       bought: 1587672212119,
-    //       amount: 1
-    //     }]
-    //   },
-    //   'f69': {
-    //     id: 'f69',
-    //     name: 'Condensed Milk',
-    //     store: 'Trader Joe\'s',
-    //     items: []
-    //   },
-    //   'f70': {
-    //     id: 'f70',
-    //     name: 'Pulled Pork Brisket',
-    //     store: 'Trader Joe\'s',
-    //     expireDaysAfterOpen: 4,
-    //     items: []
-    //   }
-    // };
-    // var meals = {
-    //   'm1': {
-    //     id: 'm1',
-    //     name: 'Hashbrowns, Eggs, & Avocado Toast',
-    //     serves: 2,
-    //     food: {
-    //       'f1': 3, // Hashbrowns
-    //       'f2': 2, // Eggs
-    //       'f4': 0.5, // Avocado
-    //       'f5': 2 // Bread slices
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     },
-    //     stock: 4
-    //   },
-    //   'm2': {
-    //     id: 'm2',
-    //     name: 'Yogurt',
-    //     serves: 1,
-    //     food: {
-    //       'f6': 1 // Noosa Yogurt
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     },
-    //     stock: 2
-    //   },
-    //   'm3': {
-    //     id: 'm3',
-    //     name: 'Cereal',
-    //     serves: 1,
-    //     food: {
-    //       'f55': 1/20 // Cereal
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     }
-    //   },
-    //   'm4': {
-    //     id: 'm4',
-    //     name: 'Smoothies',
-    //     serves: 2,
-    //     food: {
-    //       'f13': 0.2 // Frozen Food
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     }
-    //   },
-    //   'm5': {
-    //     id: 'm5',
-    //     name: 'Pancakes',
-    //     serves: 2,
-    //     food: {
-    //       'f51': 0.25, // Pancake Mix
-    //       'f2': 1 // Egg
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     }
-    //   },
-    //   'm6': {
-    //     id: 'm6',
-    //     name: 'Waffle Maker Waffles',
-    //     serves: 2,
-    //     food: {
-    //       'f51': 0.25, // Pancake Mix
-    //       'f2': 1, // Egg
-    //       'f31': 1/8 // Olive Oil
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     }
-    //   },
-    //   'm7': {
-    //     id: 'm7',
-    //     name: 'Eggo Waffles',
-    //     serves: 2,
-    //     food: {
-    //       'f7': 2 // Waffles
-    //     },
-    //     types: {
-    //       'breakfast': true
-    //     }
-    //   },
-    //   'm8': {
-    //     id: 'm8',
-    //     name: 'Turkey sandwiches',
-    //     serves: 2,
-    //     food: {
-    //       'f15': 2, // Turkey
-    //       'f16': 1/8, // Salad
-    //       'f5': 4, // Bread
-    //       'f4': 1/2, // Avocado
-    //       'f28': 1/8 // Mozzarella Cheese Ball
-    //     },
-    //     types: {
-    //       'lunch': true
-    //     }
-    //   },
-    //   'm9': {
-    //     id: 'm9',
-    //     name: 'Ramen',
-    //     serves: 2,
-    //     food: {
-    //       'f9': 2 // Ramen
-    //     },
-    //     types: {
-    //       'lunch': true
-    //     }
-    //   },
-    //   'm10': {
-    //     id: 'm10',
-    //     name: 'Mac and Cheese',
-    //     serves: 2,
-    //     food: {
-    //       'f3': 1/5, // Shredded Cheddar
-    //       'f26': 1/4, // Pasta Macaroni
-    //     },
-    //     types: {
-    //       'lunch': true
-    //     }
-    //   },
-    //   'm11': {
-    //     id: 'm11',
-    //     name: 'Rice and Curry',
-    //     serves: 2,
-    //     food: {
-    //       'f10': 2, // Curry
-    //       'f46': 1/15 // Rice
-    //     },
-    //     types: {
-    //       'lunch': true
-    //     }
-    //   },
-    //   'm12': {
-    //     id: 'm12',
-    //     name: 'Mac and cheese balls, asparagus, and brisket',
-    //     serves: 2,
-    //     food: {
-    //       'f12': 5, // Mac and cheese balls
-    //       'f30': 1/2, // Asparagus
-    //       'f56': 1, // Garlic
-    //       'f70': 1/2 // Pulled Pork Brisket
-    //     },
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm13': {
-    //     id: 'm13',
-    //     name: 'Shakshuka',
-    //     serves: 2,
-    //     food: {
-    //       'f36': 1, // Canned Tomatoes
-    //       'f2': 3, // Eggs
-    //       'f37': 1, // Red Pepper
-    //       'f28': 1/4 // Mozzarella Cheese Ball
-    //     },
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm14': {
-    //     id: 'm14',
-    //     name: 'Bimimbap',
-    //     serves: 1,
-    //     food: {
-    //       'f33': 1 // Bimimbap
-    //     },
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm15': {
-    //     id: 'm15',
-    //     name: 'Chicken, fries, mac & cheese balls',
-    //     serves: 2,
-    //     food: {
-    //       'f11': 0.5, // Breaded chicken
-    //       'f42': 0.5, // Sweet potato fries
-    //       'f12': 5 // Mac and cheese balls
-    //     },
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm16': {
-    //     id: 'm16',
-    //     name: 'Scallion pancakes and ramen',
-    //     serves: 2,
-    //     food: {
-    //       'f57': 1, // Scallion Pancakes
-    //       'f9': 2 // Ramen
-    //     },
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm17': {
-    //     id: 'm17',
-    //     name: 'Gnocchi and meatballs',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm18': {
-    //     id: 'm18',
-    //     name: 'Lasagna',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm19': {
-    //     id: 'm19',
-    //     name: 'Kung Pao',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm20': {
-    //     id: 'm20',
-    //     name: 'Chicken Samosas',
-    //     serves: 2,
-    //     notes: '400 degrees for 14-16 min',
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm21': {
-    //     id: 'm21',
-    //     name: 'Veggie Samosas',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm22': {
-    //     id: 'm22',
-    //     name: 'Spaghetti and Meatballs',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm23': {
-    //     id: 'm23',
-    //     name: 'Gyro Sandwiches',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm24': {
-    //     id: 'm24',
-    //     name: 'Eggrolls and Rice',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm25': {
-    //     id: 'm25',
-    //     name: 'Lentil Soup',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm26': {
-    //     id: 'm26',
-    //     name: 'Alfredo Pasta',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm27': {
-    //     id: 'm27',
-    //     name: 'Soup',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm28': {
-    //     id: 'm28',
-    //     name: 'Spinach Tortellini',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dinner': true
-    //     }
-    //   },
-    //   'm30': {
-    //     id: 'm30',
-    //     name: 'Chocolate covered bananas',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dessert': true
-    //     }
-    //   },
-    //   'm31': {
-    //     id: 'm31',
-    //     name: 'Chocolate covered strawberries',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dessert': true
-    //     }
-    //   },
-    //   'm32': {
-    //     id: 'm32',
-    //     name: 'Apple blossoms',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dessert': true
-    //     }
-    //   },
-    //   'm33': {
-    //     id: 'm33',
-    //     name: 'Lava Cakes',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dessert': true
-    //     }
-    //   },
-    //   'm34': {
-    //     id: 'm34',
-    //     name: 'Banana Bread',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'dessert': true
-    //     }
-    //   },
-    //   'm35': {
-    //     id: 'm35',
-    //     name: 'Hummus and Carrots',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'snacks': true
-    //     }
-    //   },
-    //   'm36': {
-    //     id: 'm36',
-    //     name: 'Chips and Hummus',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'snacks': true
-    //     }
-    //   },
-    //   'm37': {
-    //     id: 'm37',
-    //     name: 'Chips and Guac',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'snacks': true
-    //     }
-    //   },
-    //   'm38': {
-    //     id: 'm38',
-    //     name: 'Chips and Salsa',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'snacks': true
-    //     }
-    //   },
-    //   'm39': {
-    //     id: 'm39',
-    //     name: 'Scones',
-    //     serves: 2,
-    //     food: {},
-    //     types: {
-    //       'breakfast': true
-    //     }
-    //   }
-    // };
-
     var food = {};
     var meals = {};
-
     var groceryCart = {};
 
     var tab = 'food'; //food, meals, grocery
@@ -1275,6 +188,21 @@
       jsonpg.set('gavinovsak.food.meals.'+mId, meals[mId]);
     };
 
+    var updateCart = function(mId) {
+      jsonpg.set('gavinovsak.food.groceryCart', groceryCart);
+    };
+
+    var openModal = function(modalId) {
+      if (editingInput) return;
+      ['#editModal', '#mealModal', '#foodModal'].map(function(id) {
+        if (id != modalId) $(id).modal('hide');
+      });
+      $(modalId).modal('show');
+      setTimeout(function() {
+        setMaxHeight(modalId);
+      }, 200);
+    };
+
     var refreshFoodModal = function() {
       var item = editFoodObj;
 
@@ -1284,8 +212,11 @@
 
       if(!$('#foodName').is(':focus')) $('#foodName').val(item.name);
       $('#foodName').unbind('input').on('input', function() {
-        editFoodObj.name = $(this).val();
+        editFoodObj.name = $(this).val().trim();
+        $('#foodModalTitle').text(editFoodObj.name.length > 0 ? ('Edit ' + editFoodObj.name) : 'Edit Food');
       });
+
+      $('#foodModalTitle').text(editFoodObj.name.length > 0 ? ('Edit ' + editFoodObj.name) : 'Edit Food');
 
       if(!$('#foodCost').is(':focus')) $('#foodCost').val(item.cost);
       $('#foodCost').unbind('input').on('input', function() {
@@ -1323,6 +254,29 @@
         if (expireDaysAfterOpen == 0) delete editFoodObj.expireDaysAfterOpen;
       });
 
+      var foodInMeals = keys(meals).filter(function(mId) {
+        var mealItem = meals[mId];
+        return mealItem.food[editFoodObj.id] != null;
+      })
+      $('#foodInMealTitle').toggle(foodInMeals.length > 0);
+
+      $('#foodInMealList').empty();
+      foodInMeals.map(function(mId) {
+        var mealItem = meals[mId];
+        $('#foodInMealList').append($(''+
+          '<div data-id="'+mId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;" class="mealEdit">'+
+            '<h6 style="display: inline-block;margin: 5px;">'+mealItem.name+'</h6>'+
+            '<span class="icon-arrow-right" style="float: right; font-size: 20px; margin: 5px;"></span>'+
+          '</div>'));
+      });
+
+      $('.mealEdit').unbind('click').click(function() {
+        mealId = getProp(this, 'id');
+        editMealObj = clone(meals[mealId]);
+        refreshMealModal();
+        openModal('#mealModal');
+      });
+
       $('#foodOpenedAsPackSection').toggle(item.packAmount != null && item.expireDaysAfterOpen != null);
       $('.foodOpenedAsPack').addClass('btn-light').removeClass('btn-success');
       $('.foodOpenedAsPack[data-type="'+(item.openInPack ? 'Yes' : 'No')+'"]').removeClass('btn-light').addClass('btn-success');
@@ -1343,7 +297,10 @@
       if(!$('#mealName').is(':focus')) $('#mealName').val(item.name);
       $('#mealName').unbind('input').on('input', function() {
         editMealObj.name = $(this).val();
+        $('#mealModalTitle').text(editMealObj.name.length > 0 ? ('Edit ' + editMealObj.name) : 'Edit Meal');
       });
+
+      $('#mealModalTitle').text(editMealObj.name.length > 0 ? ('Edit ' + editMealObj.name) : 'Edit Meal');
 
       if(!$('#mealServes').is(':focus')) $('#mealServes').val(item.serves);
       $('#mealServes').unbind('input').on('input', function() {
@@ -1380,13 +337,37 @@
 
         if (foodItem.cost != null) totalCost += item.food[fId] * foodItem.cost * (foodItem.packAmount != null ? 1/foodItem.packAmount : 1);
 
+        var haveAmount = _.sum(foodItem.items.map(a.prop('amount')));
+        var expireStatement = '';
+        expireStatement += '(Have ' + haveAmount;
+        if (foodItem.items.length > 0) {
+          var firstItemExpireDays = getSubItemDaysToExpire(foodItem.items[0], foodItem.id);
+          if (firstItemExpireDays < 1e6) {
+            if (firstItemExpireDays >= 0) {
+              expireStatement += ', ' + foodItem.items[0].amount + ' bad in ' + firstItemExpireDays + ' days';
+            } else {
+              expireStatement += ', ' + foodItem.items[0].amount + ' went bad ' + (-firstItemExpireDays) + ' days ago';
+            }
+          }
+        }
+        expireStatement += ')';
+
         $('#mealContents').append($(''+
           '<div data-id="'+fId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
-          '  <input class="form-control amountMealContents" style="display: inline-block; width: 90px; height: 35px; margin-right: 5px;" value="'+item.food[fId]+'">'+
-          '  <h6 style="display: inline-block;">'+foodItem.name+'</h6>'+
           '  <span class="icon-remove removeMealContents" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>'+
+          '  <input class="form-control amountMealContents" style="display: inline-block; width: 90px; height: 35px; margin-right: 0px;" value="'+item.food[fId]+'">'+
+          '  <h6 class="foodEdit" style="display: inline-block;margin-top: 7px;vertical-align: top; margin-left: 5px;">'+foodItem.name+'</h6>'+          
+          (expireStatement.length > 0 ? '<h6 class="foodEdit" style="margin-left: 5px; margin-top: 7px; vertical-align: top; color: grey; display: inline-block;">'+expireStatement+'</h6>' : '')+
+          '<h6 class="icon-arrow-right foodEdit" style="margin-left: 10px;margin-right: 5px; margin-top: 9px; vertical-align: top; display: inline-block;"></span>'+
           '</div>'));
       }
+
+      $('.foodEdit').unbind('click').click(function() {
+        foodId = getProp(this, 'id');
+        editFoodObj = clone(food[foodId]);
+        refreshFoodModal();
+        openModal('#foodModal');
+      });
 
       $('.amountMealContents').parent().removeClass('has-error');
       $('.amountMealContents').unbind('input').on('input', function() {
@@ -1517,7 +498,6 @@
         editObj[id] = amount;
         if (amount == 0) delete editObj[id];
       });
-
     };
 
     getSubItemDaysToExpire = function(subItem, fId) {
@@ -1536,7 +516,7 @@
         expireDays.push(Math.floor(item.expireDays - daysSinceBought));
       }
 
-      if (expireDays.length == 0) return 0;
+      if (expireDays.length == 0) return 1e6;
       return _.min(expireDays);
     };
 
@@ -1627,8 +607,9 @@
           $('#foodList').append($(''+
             '<div data-id="'+item.id+'" class="foodRow">'+
             '  <div class="foodEdit">'+
-            '    <h6 style="display: inline-block; width: calc(100% - 30px);'+(item.items.length == 0 ? 'color: grey;' : '')+'">'+item.name+'</h6>'+
-            '    <span class="icon-pencil" style="margin-right: 5px; float: right;"></span>'+
+            '    <h6 style="display: inline-block; width: calc(100% - 60px);'+(item.items.length == 0 ? 'color: grey;' : '')+'">'+item.name+'</h6>'+
+            // '    <span class="icon-pencil" style="margin-right: 5px; float: right;"></span>'+
+            '    <span class="icon-plus addFood" style="margin-right: 5px; float: right; font-size: 18px;"></span>'+
             '  </div>'+
             '  <div>'+
             item.items.map(function(subItem, sub_i) {
@@ -1661,6 +642,21 @@
             }).join('')+
             '  </div>'+
             '</div>'));
+        });
+
+        $('.addFood').unbind('click').click(function(e) {
+          e.stopPropagation();
+          var fId = getProp(this, 'id');
+          var foodItem = food[fId];
+          editObj = {};
+          editMode = 'add';
+
+          var openInPack = foodItem.expireDaysAfterOpen != null && foodItem.packAmount != null && !!foodItem.openInPack;
+          var stepAmt = openInPack ? foodItem.packAmount : 1;
+          editObj[fId] = stepAmt;
+
+          refreshEditModal();
+          openModal('#editModal');
         });
 
         $('.subItemAmt').unbind('input').on('input', function() {
@@ -1829,7 +825,7 @@
             '<div data-id="'+item.id+'" class="goalRow">'+
             '  <input class="form-control amtInput goalInput" style="vertical-align: top; margin-right: 5px;" value="'+item.stock+'" type="number">'+
             '  <span style="width: calc(100% - 80px); display: inline-block; margin-bottom: 10px; margin-top: 4px; line-height: 25px;">'+
-              '  <h6 style="display: inline;margin-bottom: 0px;margin-top: 4px;">'+item.name+'</h6>'+
+              '  <h6 class="mealEdit" style="display: inline;margin-bottom: 0px;margin-top: 4px;">'+item.name+'</h6>'+
               '  <span class="icon-pencil mealEdit" style="margin-left: 7px; display: inline;"></span>'+
               '  <span class="icon-remove goalRemove" style="margin-left: 7px; display: inline;"></span>'+
             '  </span>'+
@@ -1843,6 +839,17 @@
             groceryList[fItem.store][fItem.id] += item.stock * item.food[fId];    
           }
         });
+
+        // Remove stuff that we have
+        for (var store in groceryList) {
+          for (var fId in groceryList[store]) {
+            var foodItem = food[fId];
+            var haveAmount =  _.sum(foodItem.items.map(a.prop('amount')));
+            if (groceryList[store][fId] <= haveAmount) delete groceryList[store][fId];
+            else groceryList[store][fId] -= haveAmount;
+          }
+          if (empty(groceryList[store])) delete groceryList[store];
+        }
 
         $('.goalInput').unbind('input').on('input', function() {
           var mId = getProp(this, 'id');
@@ -1956,6 +963,8 @@
               }
             }
           });
+
+          updateCart();
           
           $('#addAllFoodList').text('Add All '+totalNum+' to Food List').toggle(totalNum > 0);
           $('.totalCost[data-store="'+encodeURIComponent(store)+'"]').text('Total Cost: $'+roundToDecimals(totalCost, 2)).toggle(totalCost > 0);
@@ -1966,6 +975,7 @@
           var store = getProp(this, 'store');
           delete groceryCart[store][fId];
           if (empty(groceryCart[store])) delete groceryCart[store];
+          updateCart();
           refresh();
         });
 
@@ -1983,33 +993,34 @@
           }
           editMode = 'add';
           refreshEditModal();
-          $('#editModal').modal('show');
-          setTimeout(function() {
-            setMaxHeight('#editModal');
-          }, 200);
+          openModal('#editModal');
         });
 
         $('.groceryMode').removeClass('btn-dark').addClass('btn-light');
         $('.groceryMode[data-type="'+groceryMode+'"]').toggleClass('btn-dark').removeClass('btn-light');
       }
 
-      $('.foodEdit').unbind('click').click(function() {
+      $('.foodEdit').unbind('click').click(function(e) {
+        console.log($(document.activeElement), e);
         foodId = getProp(this, 'id');
         editFoodObj = clone(food[foodId]);
         refreshFoodModal();
-        $('#foodModal').modal('show');
-        setTimeout(function() {
-          setMaxHeight('#foodModal');
-        }, 200);
+        openModal('#foodModal');
       });
 
       $('.mealEdit').unbind('click').click(function() {
         mealId = getProp(this, 'id');
         editMealObj = clone(meals[mealId]);
         refreshMealModal();
-        $('#mealModal').modal('show');
-        setTimeout(function() {
-          setMaxHeight('#mealModal');
+        openModal('#mealModal');
+      });
+
+      $('input, textarea').unbind('focus, blur').on('focus', function() {
+        editingInput = true;
+        clearTimeout(blurTimeout);
+      }).on('blur', function() {
+        blurTimeout = setTimeout(function() {
+          editingInput = false;
         }, 200);
       });
     }
@@ -2018,6 +1029,9 @@
 
     var mealFilterCallback = null;
     var foodFilterCallback = null;
+
+    var editingInput = false;
+    var blurTimeout = null;
 
     $(function() {
       refresh();
@@ -2028,9 +1042,11 @@
 
         var foodDiff = isDiff(food, data.food);
         var mealDiff = isDiff(meals, data.meals);
+        var groceryCartDiff = isDiff(groceryCart, data.groceryCart);
         food = data.food || {};
         meals = data.meals || {};
-        if (foodDiff || mealDiff) refresh();
+        groceryCart = data.groceryCart || {};
+        if (foodDiff || mealDiff || groceryCartDiff) refresh();
 
         // jsonpg.set('gavinovsak.food.food.f5', null, function(data) {
         //   console.log('callback', data)
@@ -2040,13 +1056,13 @@
       $('#mealFilter').unbind('input').on('input', function() {
         mealQuery = $(this).val();
         clearTimeout(mealFilterCallback);
-        mealFilterCallback = setTimeout(refresh, 800);
+        mealFilterCallback = setTimeout(refresh, 100);
       });
 
       $('#foodFilter').unbind('input').on('input', function() {
         foodQuery = $(this).val();
         clearTimeout(foodFilterCallback);
-        foodFilterCallback = setTimeout(refresh, 800);
+        foodFilterCallback = setTimeout(refresh, 100);
       });
 
       $('.groceryMode').unbind('click').click(function() {
@@ -2062,10 +1078,7 @@
       $('#addRemoveToggle').unbind('click').click(function() {
         editObj = {};
         refreshEditModal();
-        $('#editModal').modal('show');
-        setTimeout(function() {
-          setMaxHeight('#editModal');
-        }, 200);
+        openModal('#editModal');
       });
 
       $('.datepicker-here').datepicker({
@@ -2082,10 +1095,7 @@
           }
           foodId = null;
           refreshFoodModal();
-          $('#foodModal').modal('show');
-          setTimeout(function() {
-            setMaxHeight('#foodModal');
-          }, 200);
+          openModal('#foodModal');
         } else if (tab == 'meals') {
           editMealObj = {
             name: '',
@@ -2094,10 +1104,7 @@
           }
           mealId = null;
           refreshMealModal();
-          $('#mealModal').modal('show');
-          setTimeout(function() {
-            setMaxHeight('#mealModal');
-          }, 200);
+          openModal('#mealModal');
         }
       });
 
@@ -2167,7 +1174,7 @@
         if (foodItem.store == null) return;
         groceryCart[foodItem.store] = groceryCart[foodItem.store] || {};
         if (groceryCart[foodItem.store][fId] == null) groceryCart[foodItem.store][fId] = 0;
-        groceryCart[foodItem.store][fId]++;
+        updateCart();
         refresh();
       });
 
@@ -2277,7 +1284,7 @@
     <div class="modal-dialog" style="min-width: 300px; margin-top: 15px; overflow-y: initial !important;">
       <div class="modal-content">
         <div class="modal-header" style="">
-          <h5 style="margin-top: 0px; margin-bottom: 0px; float: left;">Edit Food</h5>
+          <h5 id="foodModalTitle" style="margin-top: 0px; margin-bottom: 0px; float: left;">Edit Food</h5>
           <span class="icon-remove" style="float: right; font-size: 22px;" data-dismiss="modal"></span>
         </div>
         <div class="modal-body" style="width: 100%; padding-top: 0px; margin-bottom: 20px; overflow-y: scroll; max-height: 570px; font-size: 15px; user-select: text;">
@@ -2315,6 +1322,11 @@
               <button type="button" data-type="No" class="btn btn-light btn-sm foodOpenedAsPack">No</button>
             </div>
           </div>
+          <h6 id="foodInMealTitle" style="margin-top: 20px;">Included In:</h6>
+          <div id="foodInMealList">
+            <div data-id="f44" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;"><h6 style="display: inline-block;margin: 5px;">Blue Corn Tortilla Chips</h6>  <span class="icon-arrow-right removeMealContents" style="float: right; font-size: 20px; margin: 5px;  "></span></div>
+            <div data-id="f44" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;"><h6 style="display: inline-block;margin: 5px;">Blue Corn Tortilla Chips</h6>  <span class="icon-arrow-right removeMealContents" style="float: right; font-size: 20px; margin: 5px;  "></span></div>
+          </div>
         </div>
         <div class="modal-footer" style="">
           <div id="foodSave" class="btn btn-sm btn-success" style="float: right;">Save</div>
@@ -2328,7 +1340,7 @@
     <div class="modal-dialog" style="min-width: 300px; margin-top: 15px; overflow-y: initial !important;">
       <div class="modal-content">
         <div class="modal-header" style="">
-          <h5 style="margin-top: 0px; margin-bottom: 0px; float: left;">Edit Meal</h5>
+          <h5 id="mealModalTitle" style="margin-top: 0px; margin-bottom: 0px; float: left;">Edit Meal</h5>
           <span class="icon-remove" style="float: right; font-size: 22px;" data-dismiss="modal"></span>
         </div>
         <div class="modal-body" style="width: 100%; padding-top: 0px; overflow-y: scroll; max-height: 570px; font-size: 15px; user-select: text;">
@@ -2367,18 +1379,7 @@
             </div>
           </div>
           <h6 style="margin-top: 15px;">Contents:</h6>
-          <div id="mealContents">
-            <div style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">
-              <input class="form-control" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" type="number">
-              <h6 style="display: inline-block;">Name</h6>
-              <span class="icon-remove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>
-            </div>
-            <div style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">
-              <input class="form-control" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" type="number">
-              <h6 style="display: inline-block;">Name</h6>
-              <span class="icon-remove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>
-            </div>
-          </div>
+          <div id="mealContents"></div>
           <input id="mealContentAddSection" style="margin-top: 10px;" type="text" class="form-control" placeholder="Add Food">
           <div style="margin-top: 20px; margin-bottom: 15px; display: inline-block;">
             <h6 id="mealCost" style="display: inline-block; margin-right: 5px; vertical-align: top; margin-top: 5px;">Total Cost: $2.99</h6>
