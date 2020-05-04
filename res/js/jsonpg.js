@@ -1,11 +1,11 @@
 var jsonpg = {};
 
-// var domain = 'localhost:1002';
-var domain = 'jsonpg.herokuapp.com';
+var domain = 'localhost:1002';
+// var domain = 'jsonpg.herokuapp.com';
 
 var proxy = function(url) {
-  return 'https://medmap.tech/proxy?url=' + encodeURIComponent(url);
-  // return url;
+  // return 'https://medmap.tech/proxy?url=' + encodeURIComponent(url);
+  return url;
 
   // return 'http://localhost:3301/proxy?url=' + encodeURIComponent(url);
 }
@@ -112,33 +112,65 @@ jsonpg.get = function(path, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  $.getJSON(proxy('http://'+domain+'/'+pathList[0]+'/get?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key})), callback);
+  var url = 'http://'+domain+'/'+pathList[0]+'/get?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key});
+  $.getJSON(proxy(url), function(result) {
+    if (result == 'error') debugger
+    callback();
+  });
 };
 
 jsonpg.set = function(path, data, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  $.getJSON(proxy('http://'+domain+'/'+pathList[0]+'/set?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: JSON.stringify(data)})), callback);
+  var url = 'http://'+domain+'/'+pathList[0]+'/set?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: JSON.stringify(data)});
+  $.getJSON(proxy(url), function(result) {
+    if (result == 'error') {
+      console.log(url);
+      debugger;
+    }
+    callback();
+  });
 };
 
 jsonpg.send = function(toUsername, title, data, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  $.getJSON(proxy('http://'+domain+'/'+pathList[0]+'/set?'+getParams({username: jsonpg.username, key: jsonpg.key, to: toUsername, title: title, data: JSON.stringify(data)})), callback);
+  var url = 'http://'+domain+'/'+pathList[0]+'/set?'+getParams({username: jsonpg.username, key: jsonpg.key, to: toUsername, title: title, data: JSON.stringify(data)});
+  $.getJSON(proxy(url), function(result) {
+    if (result == 'error') {
+      console.log(url);
+      debugger;
+    }
+    callback();
+  });
 };
 
 jsonpg.push = function(path, data, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  $.getJSON(proxy('http://'+domain+'/'+pathList[0]+'/push?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: JSON.stringify(data)})), callback);
+  var url = 'http://'+domain+'/'+pathList[0]+'/push?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: JSON.stringify(data)});
+  $.getJSON(proxy(url), function(result) {
+    if (result == 'error') {
+      console.log(url);
+      debugger;
+    }
+    callback();
+  });
 };
 
 jsonpg.getNum = function(path, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  $.getJSON(proxy('http://'+domain+'/'+pathList[0]+'/getNum?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key})), callback);
+  var url = 'http://'+domain+'/'+pathList[0]+'/getNum?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key});
+  $.getJSON(proxy(url), function(result) {
+    if (result == 'error') {
+      console.log(url);
+      debugger;
+    }
+    callback();
+  });
 };
