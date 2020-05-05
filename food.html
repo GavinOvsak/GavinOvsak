@@ -221,13 +221,16 @@
       if(!$('#foodCost').is(':focus')) $('#foodCost').val(item.cost);
       $('#foodCost').unbind('input').on('input', function() {
         var cost = parseFloat($(this).val())
+        if ($(this).val().length == 0) cost = 0;
         if (isNaN(cost) || cost < 0) return;
         editFoodObj.cost = roundToDecimals(cost, 2);
+        if (cost == 0) delete editFoodObj.cost;
       });
 
       if(!$('#foodPackAmount').is(':focus')) $('#foodPackAmount').val(item.packAmount);
       $('#foodPackAmount').unbind('input').on('input', function() {
         var packAmount = parseInt($(this).val());
+        if ($(this).val().length == 0) packAmount = 0;
         if (isNaN(packAmount) || packAmount < 0) return;
         editFoodObj.packAmount = packAmount;
         if (packAmount == 0) delete editFoodObj.packAmount;
@@ -235,7 +238,8 @@
 
       if(!$('#foodExpireDays').is(':focus')) $('#foodExpireDays').val(item.expireDays);
       $('#foodExpireDays').unbind('input').on('input', function() {
-        var expireDays = parseInt($(this).val())
+        var expireDays = parseInt($(this).val());
+        if ($(this).val().length == 0) expireDays = 0;
         if (isNaN(expireDays) || expireDays < 0) return;
         editFoodObj.expireDays = expireDays;
         if (expireDays == 0) delete editFoodObj.expireDays;
@@ -248,7 +252,8 @@
 
       if(!$('#foodExpireDaysAfterOpened').is(':focus')) $('#foodExpireDaysAfterOpened').val(item.expireDaysAfterOpen);
       $('#foodExpireDaysAfterOpened').unbind('input').on('input', function() {
-        var expireDaysAfterOpen = parseInt($(this).val())
+        var expireDaysAfterOpen = parseInt($(this).val());
+        if ($(this).val().length == 0) expireDaysAfterOpen = 0;
         if (isNaN(expireDaysAfterOpen) || expireDaysAfterOpen < 0) return;
         editFoodObj.expireDaysAfterOpen = expireDaysAfterOpen;
         if (expireDaysAfterOpen == 0) delete editFoodObj.expireDaysAfterOpen;
@@ -305,16 +310,19 @@
       if(!$('#mealServes').is(':focus')) $('#mealServes').val(item.serves);
       $('#mealServes').unbind('input').on('input', function() {
         var serves = parseInt($(this).val())
+        if ($(this).val().trim().length == 0) serves = 0;
         if (isNaN(serves) || serves < 0) return;
         editMealObj.serves = serves;
+        if (serves == 0) delete editMealObj.serves;
       });
 
       if(!$('#mealStock').is(':focus')) $('#mealStock').val(item.stock == 0 ? '' : item.stock);
       $('#mealStock').unbind('input').on('input', function() {
-        var stock = parseInt($(this).val())
-        if ($(this).val().trim().length == 0) editMealObj.stock = 0;
+        var stock = parseInt($(this).val());
+        if ($(this).val().trim().length == 0) stock = 0;
         if (isNaN(stock) || stock < 0) return;
         editMealObj.stock = stock;
+        if (stock == 0) delete editMealObj.stock;
       });
 
       if(!$('#mealNotes').is(':focus')) $('#mealNotes').val(item.notes);
