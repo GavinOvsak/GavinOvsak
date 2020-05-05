@@ -323,6 +323,7 @@
       });
      
       $('.mealTypeCheck').prop('checked', false);
+      item.types = item.types || {};
       for (var type in item.types) $('.mealTypeCheck[data-type="'+type+'"]').prop('checked', true);
       $('.mealTypeCheck').unbind('change').on('change', function() {
         var type = getProp(this, 'type');
@@ -775,7 +776,7 @@
         }).filter(function(item) {
           // Type filter
           if (mealType == 'all') return true;
-          return item.types[mealType] != null;
+          return (item.types || {})[mealType] != null;
         }), [function(item) {
           return getMaxMeals(item) > 0 ? -1 : 0;
         }, function(mealItem) {
@@ -1100,6 +1101,7 @@
           editMealObj = {
             name: '',
             serves: 2,
+            types: {},
             food: {}
           }
           mealId = null;
@@ -1224,6 +1226,9 @@
         maxItems: 8
       });
       $('#foodStore').parent().css('width', '200px').css('display', 'inline-block').css('font-size', '17px');
+      $('#foodStore').on('awesomplete-selectcomplete', function(e) {
+        editFoodObj.store = $('#foodStore').val();
+      });
 
       var oldWidth = $(window).width();
       $(window).on('resize', function() {
