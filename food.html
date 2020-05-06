@@ -278,7 +278,7 @@
       foodInMeals.map(function(mId) {
         var mealItem = meals[mId];
         $('#foodInMealList').append($(''+
-          '<div data-id="'+mId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;" class="mealEdit">'+
+          '<div data-id="'+mId+'" style="background-color: lightgrey; display: inline-block; padding: 5px; margin-top: 10px; border-radius: 5px;" class="mealEdit">'+
             '<h6 style="display: inline-block;margin: 5px;">'+mealItem.name+'</h6>'+
             '<span class="icon-arrow-right" style="float: right; font-size: 20px; margin: 5px;"></span>'+
           '</div>'));
@@ -1396,10 +1396,7 @@
             </div>
           </div>
           <h6 id="foodInMealTitle" style="margin-top: 20px;">Included In:</h6>
-          <div id="foodInMealList">
-            <div data-id="f44" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;"><h6 style="display: inline-block;margin: 5px;">Blue Corn Tortilla Chips</h6>  <span class="icon-arrow-right removeMealContents" style="float: right; font-size: 20px; margin: 5px;  "></span></div>
-            <div data-id="f44" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;"><h6 style="display: inline-block;margin: 5px;">Blue Corn Tortilla Chips</h6>  <span class="icon-arrow-right removeMealContents" style="float: right; font-size: 20px; margin: 5px;  "></span></div>
-          </div>
+          <div id="foodInMealList"></div>
         </div>
         <div class="modal-footer" style="">
           <div id="foodSave" class="btn btn-sm btn-success" style="float: right;">Save</div>
