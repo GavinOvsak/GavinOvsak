@@ -126,7 +126,7 @@ jsonpg.set = function(path, data, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  var url = 'http://'+domain+'/'+pathList[0]+'/set?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: JSON.stringify(data)});
+  var url = 'http://'+domain+'/'+pathList[0]+'/set?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: (data == null ? 'null' : JSON.stringify(data))});
   $.getJSON(proxy(url), function(result) {
     if (result == 'error') {
       console.log(url);
@@ -140,7 +140,7 @@ jsonpg.send = function(toUsername, title, data, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  var url = 'http://'+domain+'/'+pathList[0]+'/set?'+getParams({username: jsonpg.username, key: jsonpg.key, to: toUsername, title: title, data: JSON.stringify(data)});
+  var url = 'http://'+domain+'/'+pathList[0]+'/set?'+getParams({username: jsonpg.username, key: jsonpg.key, to: toUsername, title: title, data: (data == null ? 'null' : JSON.stringify(data))});
   $.getJSON(proxy(url), function(result) {
     if (result == 'error') {
       console.log(url);
@@ -154,7 +154,7 @@ jsonpg.push = function(path, data, callback) {
   callback = callback || function() {};
   var pathList = splitPath(path);
   var postUserPath = joinPath(pathList.slice(1));
-  var url = 'http://'+domain+'/'+pathList[0]+'/push?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: JSON.stringify(data)});
+  var url = 'http://'+domain+'/'+pathList[0]+'/push?'+getParams({path: postUserPath, username: jsonpg.username, key: jsonpg.key, data: (data == null ? 'null' : JSON.stringify(data))});
   $.getJSON(proxy(url), function(result) {
     if (result == 'error') {
       console.log(url);

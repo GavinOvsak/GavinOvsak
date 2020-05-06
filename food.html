@@ -41,6 +41,10 @@
     text-align: center;
   }
 
+  .datepickers-container {
+    z-index: 2000
+  }
+
   .custom-underline,
   .custom-underline:hover,
   .custom-underline:focus,
@@ -160,6 +164,7 @@
     var food = {};
     var meals = {};
     var groceryCart = {};
+    var mealHistory = [];
 
     var tab = 'food'; //food, meals, grocery
     var mealType = 'all';
@@ -190,6 +195,10 @@
 
     var updateCart = function(mId) {
       jsonpg.set('gavinovsak.food.groceryCart', groceryCart);
+    };
+
+    var updateHistory = function(mId) {
+      jsonpg.set('gavinovsak.food.history', mealHistory);
     };
 
     var openModal = function(modalId) {
@@ -329,6 +338,10 @@
       $('#mealNotes').unbind('input').on('input', function() {
         editMealObj.notes = $(this).val();
       });
+
+      setTimeout(function() {
+        $('#mealNotes').click();
+      }, 500)
      
       $('.mealTypeCheck').prop('checked', false);
       item.types = item.types || {};
@@ -346,16 +359,17 @@
 
         if (foodItem.cost != null) totalCost += item.food[fId] * foodItem.cost * (foodItem.packAmount != null ? 1/foodItem.packAmount : 1);
 
-        var haveAmount = _.sum(foodItem.items.map(a.prop('amount')));
+        var haveAmount = _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
         var expireStatement = '';
         expireStatement += '(Have ' + haveAmount;
         if (foodItem.items.length > 0) {
           var firstItemExpireDays = getSubItemDaysToExpire(foodItem.items[0], foodItem.id);
           if (firstItemExpireDays < 1e6) {
+            var firstAmount = foodItem.items[0].amount;
             if (firstItemExpireDays >= 0) {
-              expireStatement += ', ' + foodItem.items[0].amount + ' bad in ' + firstItemExpireDays + ' days';
+              expireStatement += ', ' + (haveAmount != firstAmount ? firstAmount + ' ' : '') + 'bad in ' + firstItemExpireDays + ' day' + (firstItemExpireDays == 1 ? '' : 's');
             } else {
-              expireStatement += ', ' + foodItem.items[0].amount + ' went bad ' + (-firstItemExpireDays) + ' days ago';
+              expireStatement += ', ' + (haveAmount != firstAmount ? firstAmount + ' ' : '') + 'went bad ' + (-firstItemExpireDays) + ' day'+ (firstItemExpireDays == 1 ? '' : 's')+' ago';
             }
           }
         }
@@ -411,7 +425,7 @@
       for (var id in editObj) {
         var foodItem = food[id];
         if (foodItem == null) continue;
-        var haveAmount =  _.sum(foodItem.items.map(a.prop('amount')));
+        var haveAmount =  _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
 
         $('#editList').append($(''+
           '<div data-id="'+id+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
@@ -420,6 +434,9 @@
           '  <span class="icon-remove editListRemove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>'+
           '</div>'));
       }
+
+      var dateText = (date.getMonth()+1)+'/'+(date.getDate());
+      $('#editDate').val(dateText);
 
       $('.editMode[data-type="add"]')
         .toggleClass('btn-primary', editMode == 'add')
@@ -434,6 +451,9 @@
       });
 
       $('#editSubmit').unbind('click').click(function() {
+        var customDate = new Date($('#editDate').val());
+        if (customDate == 'Invalid Date') customDate = date;
+
         if (editMode == 'add') {
           for (var fId in editObj) {
             var foodItem = food[fId];
@@ -441,7 +461,7 @@
             var lastItem = (foodItem.items || []).slice(-1)[0];
             if (foodItem.items.length == 0 || lastItem.bought != date.getTime()) {
               foodItem.items.push({
-                bought: date.getTime(),
+                bought: customDate.getTime(),
                 amount: editObj[fId]
               });
             } else {
@@ -490,6 +510,13 @@
             updateFood(fId);
           }
         }
+
+        mealHistory.push({
+          type: editMode,
+          date: customDate.getTime(),
+          food: clone(editObj)
+        });
+        updateHistory();
 
         editObj = {};
         refresh();
@@ -747,8 +774,9 @@
           }
         });
 
-        $('.dateInput').unbind('click').click(function() {
+        $('.dateInput').unbind('click').click(function(e) {
           var datepicker = $(this).parent().find('.datepicker-here').datepicker().data('datepicker');
+          // editingInput = true; // Can't detect closing
           datepicker.show();
         });
       }
@@ -817,9 +845,25 @@
             '<div data-id="'+item.id+'" class="mealRow">'+
             '  <div class="mealEdit" style="'+(maxMeals == 0 ? 'color:grey;' : '')+'">'+
             '    <h6 style="display: inline-block; margin-bottom: 0px; width: calc(100% - 30px);">'+item.name+' for '+item.serves+' (x'+maxMeals+') '+expireText+'</h6>'+
-            '    <span class="icon-pencil" style="margin-right: 5px; float: right;"></span>'+
+            '    <span class="icon-ok mealRemove" style="margin-right: 5px; float: right;"></span>'+
             '  </div>'+
             '</div>'));
+        });
+
+        $('.mealRemove').unbind('click').click(function(e) {
+          e.stopPropagation();
+          var mId = getProp(this, 'id');
+          var mealItem = meals[mId];
+          editObj = {};
+          editMode = 'remove';
+
+          for (var fId in mealItem.food) {
+            if (editObj[fId] == null) editObj[fId] = 0;
+            editObj[fId] += mealItem.food[fId];
+          }
+
+          refreshEditModal();
+          openModal('#editModal');
         });
       }
 
@@ -855,7 +899,7 @@
         for (var store in groceryList) {
           for (var fId in groceryList[store]) {
             var foodItem = food[fId];
-            var haveAmount =  _.sum(foodItem.items.map(a.prop('amount')));
+            var haveAmount =  _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
             if (groceryList[store][fId] <= haveAmount) delete groceryList[store][fId];
             else groceryList[store][fId] -= haveAmount;
           }
@@ -1034,6 +1078,11 @@
           editingInput = false;
         }, 200);
       });
+
+      $("textarea").unbind('keyup keydown onpaste oncut click').on('keyup keydown onpaste oncut click', function(e) {
+        $(this).height(5);
+        $(this).height(Math.max(this.scrollHeight, 50)+'px');
+      });
     }
 
     jsonpg.setKey('gavinovsak', 'QaMtKn7p9yDuctl');
@@ -1054,14 +1103,23 @@
         var foodDiff = isDiff(food, data.food);
         var mealDiff = isDiff(meals, data.meals);
         var groceryCartDiff = isDiff(groceryCart, data.groceryCart);
+        var historyDiff = isDiff(mealHistory, data.history);
+        
         food = data.food || {};
         meals = data.meals || {};
         groceryCart = data.groceryCart || {};
-        if (foodDiff || mealDiff || groceryCartDiff) refresh();
+        mealHistory = data.history || [];
+        if (foodDiff || mealDiff || groceryCartDiff || historyDiff) refresh();
 
         // jsonpg.set('gavinovsak.food.food.f5', null, function(data) {
         //   console.log('callback', data)
         // })
+      });
+
+      $('#editDate').datepicker({
+        language: 'en',
+        autoClose: true,
+        maxDate: new Date()
       });
 
       $('#mealFilter').unbind('input').on('input', function() {
@@ -1420,6 +1478,11 @@
           <div id="editList" style="min-height: 150px;"></div>
         </div>
         <div class="modal-footer" style="text-align: left; display: inline-block;">
+          <!-- <h6 style="display: inline-block;margin-right: 0px;">Date: </h6> -->
+          <input id="editDate" class="form-control" style="display: inline-block; width: 65px; height: 31px; vertical-align: top; padding-left: 10px; padding-right: 5px;"
+          data-date-format="m/d" data-language="en" 
+          class="datepicker-here" autocomplete="off" 
+          data-position="top left" >
           <div class="btn-group" role="group" style="">
             <button type="button" data-type="add" class="btn btn-sm editMode">Add</button>
             <button type="button" data-type="remove" class="btn btn-sm editMode">Eat</button>
