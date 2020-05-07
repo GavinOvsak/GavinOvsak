@@ -428,10 +428,10 @@
         var haveAmount =  _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
 
         $('#editList').append($(''+
-          '<div data-id="'+id+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
+          '<div data-id="'+id+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px; display: inline-block; width: 100%;">'+
           '  <input class="form-control editListAmount" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" value="'+editObj[id]+'">'+
           '  <h6 style="display: inline-block;">'+foodItem.name+' <span style="color: grey;">(Have '+haveAmount+')</span></h6>'+
-          '  <span class="icon-remove editListRemove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>'+
+          '  <span class="icon-remove editListRemove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px; margin-bottom: 5px;"></span>'+
           '</div>'));
       }
 
