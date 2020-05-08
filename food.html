@@ -1073,6 +1073,7 @@
       });
 
       $('input, textarea').unbind('focus, blur').on('focus', function() {
+        // Only on mobile to help with closing the keyboard
         if (isMobile) editingInput = true;
         clearTimeout(blurTimeout);
       }).on('blur', function() {
@@ -1161,7 +1162,7 @@
       $('#newItem').unbind('click').click(function() {
         if (tab == 'food') {
           editFoodObj = {
-            name: '',
+            name: $('#foodFilter').val(),
             items: []
           }
           foodId = null;
@@ -1169,7 +1170,7 @@
           openModal('#foodModal');
         } else if (tab == 'meals') {
           editMealObj = {
-            name: '',
+            name: $('#mealFilter').val(),
             serves: 2,
             types: {},
             food: {}
