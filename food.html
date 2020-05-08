@@ -574,7 +574,7 @@
       });
 
       $('#editSubmit').unbind('click').click(function() {
-        var customDate = new Date($('#editDate').val());
+        var customDate = new Date($('#editDate').val() + '/' + (date.getYear() + 1900));
         if (customDate == 'Invalid Date') customDate = date;
 
         if (editMode == 'add') {
@@ -1175,8 +1175,11 @@
           editObj = {};
           for (var store in groceryCart) {
             for (var fId in groceryCart[store]) {
+              if (groceryCart[store][fId] == 0) continue;
               if (editObj[fId] == null) editObj[fId] = 0;
-              editObj[fId] += groceryCart[store][fId];
+              editObj[fId] += groceryCart[store][fId] * (food[fId].packAmount != null ? food[fId].packAmount : 1);
+
+              delete groceryCart[store][fId];
             }
           }
           editMode = 'add';
