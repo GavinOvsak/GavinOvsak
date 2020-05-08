@@ -1070,7 +1070,7 @@
             var amountNeeded = groceryList[store][fId];
             if (food[fId].packAmount != null) {
               var num = Math.ceil(amountNeeded/food[fId].packAmount);
-              text += 'Need ' + num + ' Pack'+(num != 1 ? 's' : '')+' of ' + '<span class="foodEdit">'+food[fId].name+'</span>';
+              text += 'Need ' + num + '<span class="foodEdit">' + ' Pack'+(num != 1 ? 's' : '')+' of ' +food[fId].name+'</span>';
             } else {
               var num = Math.ceil(amountNeeded);
               text += 'Need ' + num + ' ' + '<span class="foodEdit">'+food[fId].name+'</span>';
