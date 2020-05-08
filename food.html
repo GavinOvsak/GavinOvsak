@@ -482,7 +482,7 @@
 
         if (foodItem.cost != null) totalCost += item.food[fId] * foodItem.cost * (foodItem.packAmount != null ? 1/foodItem.packAmount : 1);
 
-        var haveAmount = _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
+        var haveAmount = _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(1);
         var expireStatement = '';
         expireStatement += '(Have ' + haveAmount;
         if (foodItem.items.length > 0) {
