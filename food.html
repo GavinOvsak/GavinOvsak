@@ -553,10 +553,18 @@
         $('#editList').append($(''+
           '<div data-id="'+id+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px; display: inline-block; width: 100%;">'+
           '  <input class="form-control editListAmount" style="display: inline-block; width: 80px; height: 35px; margin-right: 5px;" value="'+editObj[id]+'">'+
-          '  <h6 style="display: inline-block;">'+foodItem.name+' <span style="color: grey;">(Have '+haveAmount+')</span></h6>'+
+          '  <h6 style="display: inline-block;" class="foodEdit">'+foodItem.name+' <span style="color: grey;">(Have '+haveAmount+')</span></h6>'+
           '  <span class="icon-remove editListRemove" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px; margin-bottom: 5px;"></span>'+
           '</div>'));
       }
+
+      $('.foodEdit').unbind('click').click(function(e) {
+        console.log($(document.activeElement), e);
+        foodId = getProp(this, 'id');
+        editFoodObj = clone(food[foodId]);
+        refreshFoodModal();
+        openModal('#foodModal');
+      });
 
       var dateText = (date.getMonth()+1)+'/'+(date.getDate());
       $('#editDate').val(dateText);
@@ -570,6 +578,11 @@
 
       $('.editMode').unbind('click').click(function() {
         editMode = getProp(this, 'type');
+        refreshEditModal();
+      });
+
+      $('#editClear').unbind('click').click(function() {
+        editObj = {};
         refreshEditModal();
       });
 
@@ -1184,6 +1197,8 @@
           }
           editMode = 'add';
           refreshEditModal();
+          refresh();
+          updateCart();
           openModal('#editModal');
         });
 
@@ -1282,7 +1297,7 @@
       });
 
       $('#addRemoveToggle').unbind('click').click(function() {
-        editObj = {};
+        // editObj = {};
         refreshEditModal();
         openModal('#editModal');
       });
@@ -1626,6 +1641,7 @@
             <button type="button" data-type="remove" class="btn btn-sm editMode">Eat</button>
           </div>
           <div id="editSubmit" class="btn btn-sm btn-primary" style="float: right;">Save</div>
+          <div id="editClear" class="btn btn-sm btn-light" style="float: right;">Clear</div>
         </div>
       </div>
     </div>
