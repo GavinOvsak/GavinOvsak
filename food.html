@@ -276,6 +276,100 @@
       })
       $('#foodInMealTitle').toggle(foodInMeals.length > 0);
 
+      $('#foodHaveSection').toggle(item.id != null);
+      if (item.id != null) {
+
+        $('#foodHaveNew').unbind('click').click(function() {
+          var openInPack = item.expireDaysAfterOpen != null && item.packAmount != null && !!item.openInPack;
+          var stepAmt = openInPack ? item.packAmount : 1;
+          item.items.push({
+            amount: stepAmt,
+            bought: date.getTime()
+          });
+          refreshFoodModal();
+        });
+
+        $('#foodHaveList').empty();
+        item.items.map(function(subItem, sub_i) {
+          var daysToExpire = getSubItemDaysToExpire(subItem, item);
+
+          var boughtDate = new Date(subItem.bought);
+          var openedDate = subItem.opened != null ? new Date(subItem.opened) : null;
+
+          var expireNote = null;
+          if (item.expireDays != null || (item.expireDaysAfterOpen != null && subItem.opened != null)) {
+            if (daysToExpire > 0) {
+              // Math.round(item.expireDays - daysSinceBought)
+              expireNote = '<h6 style="display: inline-block; color: grey; margin-right: 2px; margin-left: 5px;">(bad in '+daysToExpire+' days)</h6>'
+            } else {
+              var expireDate = new Date(Date.now() + daysToExpire * day);
+              expireNote = '<h6 style="display: inline-block; color: #e60606; margin-right: 2px; margin-left: 5px;">(went bad on ' + (expireDate.getMonth()+1)+'/'+(expireDate.getDate()) + ')</h6>'
+            }
+          }
+
+          $('#foodHaveList').append($(''+
+            '<div class="itemRow" data-id="'+item.id+'" data-subIndex="'+sub_i+'">'+
+            '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;" value="'+subItem.amount+'" type="number">'+
+            '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;">'+
+              '<h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item, sub_i, 'bought', false)+'</h6>'+
+              (subItem.opened != null ? 
+              '<h6 style="display: inline-block;margin-left: 5px;"> opened '+dateInput(item, sub_i, 'opened', true)+'</h6>' : '')+
+              (expireNote != null ? expireNote : '')+
+              ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;padding-bottom: 2px;padding-top: 2px; margin-right: 5px;vertical-align: top;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
+              '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span>'+
+            '</span>'+
+            '</div>'));
+        });
+
+        $('.subItemAmt').unbind('input').on('input', function() {
+          var subIndex = parseInt(getProp(this, 'subIndex'));
+          var amount = parseFloat($(this).val())
+          if (isNaN(amount) || amount < 0) return;
+          editFoodObj.items[subIndex].amount = amount;
+        });
+
+        $('.subItemOpen').unbind('click').on('click', function() {
+          var subIndex = parseInt(getProp(this, 'subIndex'));
+          var foodItem = editFoodObj;
+          var subItem = foodItem.items[subIndex];
+
+          // Check if open in packs
+          var openInPack = foodItem.expireDaysAfterOpen != null && foodItem.packAmount != null && !!foodItem.openInPack;
+          var stepAmt = openInPack ? foodItem.packAmount : 1;
+
+          var existingOpenItem = null;
+          foodItem.items.map(function(subItem2) {
+            if (existingOpenItem == null && subItem2.opened == date.getTime() && subItem2.bought == subItem.bought) {
+              existingOpenItem = subItem2;
+            }
+          });
+
+          if (existingOpenItem != null) {
+            existingOpenItem.amount += stepAmt;
+            subItem.amount -= stepAmt;
+            if (subItem.amount == 0) foodItem.items.splice(subIndex, 1);
+          } else {
+            if (subItem.amount <= stepAmt) {
+              subItem.opened = date.getTime();
+            } else {
+              subItem.amount -= stepAmt;
+              foodItem.items.unshift({
+                bought: subItem.bought,
+                amount: stepAmt,
+                opened: date.getTime()
+              });
+            }
+          }
+          refreshFoodModal();
+        });
+
+        $('.itemRemove').unbind('click').click(function() {
+          var subIndex = parseInt(getProp(this, 'subIndex'));
+          editFoodObj.items.splice(subIndex, 1);
+          refreshFoodModal();
+        });
+      }
+
       $('#foodInMealList').empty();
       foodInMeals.map(function(mId) {
         var mealItem = meals[mId];
@@ -301,6 +395,32 @@
         if (openInPack == 'Yes') editFoodObj.openInPack = openInPack;
         else delete editFoodObj.openInPack;
         refreshFoodModal();
+      });
+
+      $('.datepicker-here').datepicker({
+        language: 'en',
+        autoClose: true,
+        maxDate: new Date(),
+        onSelect: function(dateText, dateObj, e) {
+          var dateTime = dateObj.getTime();
+          var subIndex = parseInt(getProp(arguments[2].el, 'subIndex'));
+          var type = getProp(arguments[2].el, 'type');
+          editFoodObj.items[subIndex][type] = dateTime;
+          var subItem = editFoodObj.items[subIndex];
+
+          if (subItem.opened != null && subItem.opened < subItem.bought) delete subItem.opened;
+
+          editFoodObj.items = _.sortBy(editFoodObj.items, function(subItem) {
+            return getSubItemDaysToExpire(subItem, editFoodObj);
+          });
+          refreshFoodModal();
+        }
+      });
+
+      $('.dateInput').unbind('click').click(function(e) {
+        var datepicker = $(this).parent().find('.datepicker-here').datepicker().data('datepicker');
+        // editingInput = true; // Can't detect closing
+        datepicker.show();
       });
     };
 
@@ -365,7 +485,7 @@
         var expireStatement = '';
         expireStatement += '(Have ' + haveAmount;
         if (foodItem.items.length > 0) {
-          var firstItemExpireDays = getSubItemDaysToExpire(foodItem.items[0], foodItem.id);
+          var firstItemExpireDays = getSubItemDaysToExpire(foodItem.items[0], foodItem);
           if (firstItemExpireDays < 1e6) {
             var firstAmount = foodItem.items[0].amount;
             if (firstItemExpireDays >= 0) {
@@ -540,10 +660,10 @@
       });
     };
 
-    getSubItemDaysToExpire = function(subItem, fId) {
+    getSubItemDaysToExpire = function(subItem, foodItem) {
       var expireDays = [];
 
-      var item = food[fId];
+      var item = foodItem;
       if (item.expireDaysAfterOpen != null && subItem.opened != null) {
         var openedDate = new Date(subItem.opened);
         var daysSinceOpened = (Date.now() - openedDate.getTime()) / day;
@@ -565,24 +685,24 @@
       if (item.items.length == 0) return 1e6; // Won't expire for a long time
 
       return _.min(item.items.map(function(subItem) {
-        return getSubItemDaysToExpire(subItem, fId);
+        return getSubItemDaysToExpire(subItem, item);
       }));
     };
 
-    var dateInput = function(fId, subIndex, type, isRight) {
-      var item = food[fId];
+    var dateInput = function(foodItem, subIndex, type, isRight) {
+      var item = foodItem;
       var subItem = item.items[subIndex];
       var subItemDate = new Date(subItem[type]);
       var dateText = (subItemDate.getMonth()+1)+'/'+(subItemDate.getDate());
 
       if (isRight) {
-        return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><span class="dateInput">'+dateText+'</span><input type="text"'+
+        return '<span data-fId="'+foodItem.id+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><span class="dateInput">'+dateText+'</span><input type="text"'+
           'data-date-format="mm/dd" data-language="en" '+
           'class="datepicker-here" '+
           'data-position="bottom right" '+
           'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"></span>';
       } else {
-        return '<span data-fId="'+fId+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><input type="text"'+
+        return '<span data-fId="'+foodItem.id+'" data-subIndex="'+subIndex+'" data-type="'+type+'"><input type="text"'+
           'data-date-format="mm/dd" data-language="en" '+
           'class="datepicker-here" '+
           'data-position="bottom left" '+
@@ -653,7 +773,7 @@
             '  </div>'+
             '  <div>'+
             item.items.map(function(subItem, sub_i) {
-              var daysToExpire = getSubItemDaysToExpire(subItem, item.id);
+              var daysToExpire = getSubItemDaysToExpire(subItem, item);
     
               var boughtDate = new Date(subItem.bought);
               var openedDate = subItem.opened != null ? new Date(subItem.opened) : null;
@@ -672,12 +792,14 @@
               return ''+
               '<div class="itemRow" data-subIndex="'+sub_i+'">'+
               '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;" value="'+subItem.amount+'" type="number">'+
-              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;"><h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item.id, sub_i, 'bought', false)+'</h6>'+
-              (subItem.opened != null ? 
-              '<h6 style="display: inline-block;margin-left: 5px;"> opened '+dateInput(item.id, sub_i, 'opened', true)+'</h6>' : '')+
-              (expireNote != null ? expireNote : '')+
-              ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;margin-top: 5px;padding-bottom: 2px;padding-top: 2px; margin-right: 5px;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
-              '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span></span>'+
+              '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;">'+
+                '<h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item, sub_i, 'bought', false)+'</h6>'+
+                (subItem.opened != null ? 
+                '<h6 style="display: inline-block;margin-left: 5px;"> opened '+dateInput(item, sub_i, 'opened', true)+'</h6>' : '')+
+                (expireNote != null ? expireNote : '')+
+                ((subItem.opened == null && item.expireDaysAfterOpen != null) ? '  <h6 class="btn btn-sm btn-primary subItemOpen" style="display: inline-block;padding-bottom: 2px;padding-top: 2px; margin-right: 5px;vertical-align: top;">Open '+((item.packAmount != null && !!item.openInPack) ? ('Pack of ' + item.packAmount) : '1')+'</h6>' : '')+
+                '<span class="icon-remove itemRemove" style="margin-left: 5px;"></span>'+
+              '</span>'+
               '</div>';
             }).join('')+
             '  </div>'+
@@ -760,7 +882,7 @@
           maxDate: new Date(),
           onSelect: function(dateText, dateObj, e) {
             var dateTime = dateObj.getTime();
-            var fId = getProp(arguments[2].el, 'id');
+            var fId = getProp(arguments[2].el, 'fId');
             var subIndex = parseInt(getProp(arguments[2].el, 'subIndex'));
             var type = getProp(arguments[2].el, 'type');
             food[fId].items[subIndex][type] = dateTime;
@@ -769,7 +891,7 @@
             if (subItem.opened != null && subItem.opened < subItem.bought) delete subItem.opened;
 
             food[fId].items = _.sortBy(food[fId].items, function(subItem) {
-              return getSubItemDaysToExpire(subItem, fId);
+              return getSubItemDaysToExpire(subItem, food[fId]);
             });
             updateFood(fId);
             refresh();
@@ -883,7 +1005,7 @@
             '  <input class="form-control amtInput goalInput" style="vertical-align: top; margin-right: 5px;" value="'+item.stock+'" type="number">'+
             '  <span style="width: calc(100% - 80px); display: inline-block; margin-bottom: 10px; margin-top: 4px; line-height: 25px;">'+
               '  <h6 class="mealEdit" style="display: inline;margin-bottom: 0px;margin-top: 4px;">'+item.name+' for '+item.serves+'</h6>'+
-              '  <span class="icon-pencil mealEdit" style="margin-left: 7px; display: inline;"></span>'+
+              // '  <span class="icon-pencil mealEdit" style="margin-left: 7px; display: inline;"></span>'+
               '  <span class="icon-remove goalRemove" style="margin-left: 7px; display: inline;"></span>'+
             '  </span>'+
             '</div>'));
@@ -970,11 +1092,11 @@
             if (groceryList[store][fId] == null) {
               $('#groceryList').append($(''+
                 '<h6 data-store="'+store+'" data-id="'+fId+'">Got <input class="form-control groceryInput" style="width: 60px;display: inline-block;height: 32px;" placeholder="#" value="'+(groceryCart[store][fId] > 0 ? groceryCart[store][fId] : '')+'"> + '+
-                (food[fId].packAmount != null ? 'Packs of ' : '')+food[fId].name+
+                (food[fId].packAmount != null ? 'Pack of ' : '')+food[fId].name+
                 (food[fId].cost != null ? '<span style="color: grey;"> ($' + food[fId].cost + ')</span>' : '')+
                 '<span class="icon-remove groceryRemove" style="margin-left: 10px;"></span>'+
                 '<span class="icon-pencil foodEdit" style="margin-left: 15px;"></span>'+
-                '</h6>'));        
+                '</h6>'));
 
               totalNum += groceryCart[store][fId];
               if (food[fId].cost != null) totalCost += food[fId].cost * groceryCart[store][fId];
@@ -1397,6 +1519,10 @@
               <button type="button" data-type="Yes" class="btn btn-success btn-sm foodOpenedAsPack">Yes</button>
               <button type="button" data-type="No" class="btn btn-light btn-sm foodOpenedAsPack">No</button>
             </div>
+          </div>
+          <div id="foodHaveSection">
+            <h6 style="margin-top: 20px;margin-bottom: 10px;">Have:<span id="foodHaveNew" class="icon-plus" style="margin-left: 15px;margin-top: 3px;display: inline-block;vertical-align: top;"></span></h6>
+            <div id="foodHaveList"></div>
           </div>
           <h6 id="foodInMealTitle" style="margin-top: 20px;">Included In:</h6>
           <div id="foodInMealList"></div>
