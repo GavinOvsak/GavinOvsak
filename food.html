@@ -1057,12 +1057,12 @@
           var totalCost = 0;
 
           var addedIds = keys(groceryList[store]).filter(function(fId) {
-            var store = groceryCart[store] || {};
-            return store[fId] != null && store[fId] != 0;
+            var storeObj = groceryCart[store] || {};
+            return storeObj[fId] != null && storeObj[fId] != 0;
           });
           var emptyIds = keys(groceryList[store]).filter(function(fId) {
-            var store = groceryCart[store] || {};
-            return store[fId] == null || store[fId] == 0;
+            var storeObj = groceryCart[store] || {};
+            return storeObj[fId] == null || storeObj[fId] == 0;
           });
           addedIds.concat(emptyIds).map(function(fId) {
             // Recognize that things which are sold in packs should be described as a pack
