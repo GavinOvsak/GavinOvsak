@@ -1092,7 +1092,7 @@
             if (groceryList[store][fId] == null) {
               $('#groceryList').append($(''+
                 '<h6 data-store="'+store+'" data-id="'+fId+'">Got <input class="form-control groceryInput" style="width: 60px;display: inline-block;height: 32px;" placeholder="#" value="'+(groceryCart[store][fId] > 0 ? groceryCart[store][fId] : '')+'"> + '+
-                (food[fId].packAmount != null ? 'Pack of ' : '')+food[fId].name+
+                '<span class="foodEdit">'+(food[fId].packAmount != null ? 'Pack of ' : '')+food[fId].name+'</span>'+
                 (food[fId].cost != null ? '<span style="color: grey;"> ($' + food[fId].cost + ')</span>' : '')+
                 '<span class="icon-remove groceryRemove" style="margin-left: 10px;"></span>'+
                 '<span class="icon-pencil foodEdit" style="margin-left: 15px;"></span>'+
