@@ -1056,7 +1056,15 @@
           $('#groceryList').append($('<h5 style="margin-top: '+(i == 0 ? 10 : 40)+'px; text-decoration: underline;">'+store+' List</h5>'));
           var totalCost = 0;
 
-          for (var fId in groceryList[store]) {
+          var addedIds = keys(groceryList[store]).filter(function(fId) {
+            var store = groceryCart[store] || {};
+            return store[fId] != null && store[fId] != 0;
+          });
+          var emptyIds = keys(groceryList[store]).filter(function(fId) {
+            var store = groceryCart[store] || {};
+            return store[fId] == null || store[fId] == 0;
+          });
+          addedIds.concat(emptyIds).map(function(fId) {
             // Recognize that things which are sold in packs should be described as a pack
 
             var text = '';
@@ -1086,7 +1094,7 @@
             text += '<span class="icon-pencil foodEdit" style="margin-left: 10px;"></span>';
 
             $('#groceryList').append($('<h6 data-id="'+fId+'" data-store="'+store+'" style="line-height: 35px;">'+text+'</h6>')); 
-          }
+          });
 
           for (var fId in groceryCart[store]) {
             if (groceryList[store][fId] == null) {
