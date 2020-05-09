@@ -563,7 +563,6 @@
       }
 
       $('.foodEdit').unbind('click').click(function(e) {
-        console.log($(document.activeElement), e);
         foodId = getProp(this, 'id');
         editFoodObj = clone(food[foodId]);
         refreshFoodModal();
