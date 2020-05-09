@@ -492,7 +492,7 @@
         if (foodItem.items.length > 0) {
           var firstItemExpireDays = getSubItemDaysToExpire(foodItem.items[0], foodItem);
           if (firstItemExpireDays < 1e6) {
-            var firstAmount = foodItem.items[0].amount;
+            var firstAmount = cleanNumber(foodItem.items[0].amount);
             if (firstItemExpireDays >= 0) {
               expireStatement += ', ' + (haveAmount != firstAmount ? firstAmount + ' ' : '') + 'bad in ' + firstItemExpireDays + ' day' + (firstItemExpireDays == 1 ? '' : 's');
             } else {
