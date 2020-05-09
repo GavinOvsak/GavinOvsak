@@ -180,6 +180,10 @@
     var editObj = {};
     var editMode = 'remove';
 
+    var cleanNumber = function(num) {
+      return num - num % 0.01;
+    };
+
     var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     var today = new Date();
@@ -231,7 +235,7 @@
 
       if(!$('#foodCost').is(':focus')) $('#foodCost').val(item.cost);
       $('#foodCost').unbind('input').on('input', function() {
-        var cost = parseFloat($(this).val())
+        var cost = cleanNumber(parseFloat($(this).val()))
         if ($(this).val().length == 0) cost = 0;
         if (isNaN(cost) || cost < 0) return;
         editFoodObj.cost = roundToDecimals(cost, 2);
@@ -323,7 +327,7 @@
 
         $('.subItemAmt').unbind('input').on('input', function() {
           var subIndex = parseInt(getProp(this, 'subIndex'));
-          var amount = parseFloat($(this).val())
+          var amount = cleanNumber(parseFloat($(this).val()))
           if (isNaN(amount) || amount < 0) return;
           editFoodObj.items[subIndex].amount = amount;
         });
@@ -346,13 +350,13 @@
 
           if (existingOpenItem != null) {
             existingOpenItem.amount += stepAmt;
-            subItem.amount -= stepAmt;
+            subItem.amount = cleanNumber(subItem.amount - stepAmt);
             if (subItem.amount == 0) foodItem.items.splice(subIndex, 1);
           } else {
             if (subItem.amount <= stepAmt) {
               subItem.opened = date.getTime();
             } else {
-              subItem.amount -= stepAmt;
+              subItem.amount = cleanNumber(subItem.amount - stepAmt);
               foodItem.items.unshift({
                 bought: subItem.bought,
                 amount: stepAmt,
@@ -482,7 +486,7 @@
 
         if (foodItem.cost != null) totalCost += item.food[fId] * foodItem.cost * (foodItem.packAmount != null ? 1/foodItem.packAmount : 1);
 
-        var haveAmount = _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(1);
+        var haveAmount = cleanNumber(_.sum(foodItem.items.map(a.prop('amount'))));
         var expireStatement = '';
         expireStatement += '(Have ' + haveAmount;
         if (foodItem.items.length > 0) {
@@ -518,7 +522,7 @@
       $('.amountMealContents').parent().removeClass('has-error');
       $('.amountMealContents').unbind('input').on('input', function() {
         var fId = getProp(this, 'id');
-        var amount = parseFloat($(this).val())
+        var amount = cleanNumber(parseFloat($(this).val()))
         var isErr = isNaN(amount);
         $(this).parent().toggleClass('has-error', isErr);
         if (isErr) return;
@@ -548,7 +552,7 @@
       for (var id in editObj) {
         var foodItem = food[id];
         if (foodItem == null) continue;
-        var haveAmount =  _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
+        var haveAmount = cleanNumber(_.sum(foodItem.items.map(a.prop('amount'))));
 
         $('#editList').append($(''+
           '<div data-id="'+id+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px; display: inline-block; width: 100%;">'+
@@ -602,6 +606,7 @@
               });
             } else {
               lastItem.amount += editObj[fId];
+              lastItem.amount = cleanNumber(lastItem.amount);
             }
             updateFood(fId);
           }
@@ -618,15 +623,15 @@
             foodItem.items.map(function(item) {
               if (amountLeft > 0) {
                 if (amountLeft < item.amount) {
-                  item.amount -= amountLeft;
+                  item.amount = cleanNumber(item.amount - amountLeft);
                   amountLeft = 0;
                   if (foodItem.expireDaysAfterOpen != null && item.opened == null && amountLeft < stepAmt) {
                     // If closed, and amount left is less than amt in pack or self, then bump out into its own opened thing. Leave a multiple of stepAmt
-                    var bumpAmt = item.amount % stepAmt;
+                    var bumpAmt = cleanNumber(item.amount % stepAmt);
                     if (bumpAmt == 0) {
                       item.opened = date.getTime();
                     } else {
-                      item.amount -= bumpAmt;
+                      item.amount = cleanNumber(item.amount - bumpAmt);
                       foodItem.items.unshift({
                         bought: item.bought,
                         amount: bumpAmt,
@@ -635,7 +640,7 @@
                     }
                   }
                 } else {
-                  amountLeft -= item.amount;
+                  amountLeft = cleanNumber(amountLeft - item.amount);
                   item.amount = 0;
                 }
               }
@@ -667,7 +672,7 @@
 
       $('.editListAmount').unbind('input').on('input', function() {
         var id = getProp(this, 'id');
-        var amount = parseFloat($(this).val());
+        var amount = cleanNumber(parseFloat($(this).val()));
         if (isNaN(amount) || amount < 0) return;
         editObj[id] = amount;
         if (amount == 0) delete editObj[id];
@@ -838,7 +843,7 @@
         $('.subItemAmt').unbind('input').on('input', function() {
           var fId = getProp(this, 'id');
           var subIndex = parseInt(getProp(this, 'subIndex'));
-          var amount = parseFloat($(this).val())
+          var amount = cleanNumber(parseFloat($(this).val()));
           if (isNaN(amount) || amount < 0) return;
           food[fId].items[subIndex].amount = amount;
           updateFood(fId);
@@ -863,13 +868,13 @@
 
           if (existingOpenItem != null) {
             existingOpenItem.amount += stepAmt;
-            subItem.amount -= stepAmt;
+            subItem.amount = cleanNumber(subItem.amount - stepAmt);
             if (subItem.amount == 0) foodItem.items.splice(subIndex, 1);
           } else {
             if (subItem.amount <= stepAmt) {
               subItem.opened = date.getTime();
             } else {
-              subItem.amount -= stepAmt;
+              subItem.amount = cleanNumber(subItem.amount - stepAmt);
               foodItem.items.unshift({
                 bought: subItem.bought,
                 amount: stepAmt,
@@ -1037,7 +1042,7 @@
         for (var store in groceryList) {
           for (var fId in groceryList[store]) {
             var foodItem = food[fId];
-            var haveAmount =  _.sum(foodItem.items.map(a.prop('amount'))).toPrecision(2);
+            var haveAmount = cleanNumber(_.sum(foodItem.items.map(a.prop('amount'))));
             if (groceryList[store][fId] <= haveAmount) delete groceryList[store][fId];
             else groceryList[store][fId] -= haveAmount;
           }
