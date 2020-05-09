@@ -810,7 +810,7 @@
 
               return ''+
               '<div class="itemRow" data-subIndex="'+sub_i+'">'+
-              '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;" value="'+subItem.amount+'" type="number">'+
+              '  <input class="form-control amtInput subItemAmt" style="vertical-align: top;" value="'+cleanNumber(subItem.amount)+'" type="number">'+
               '<span style="display: inline-block; margin-bottom: 10px; width: calc(100% - 60px); margin-top: 4px;">'+
                 '<h6 style="display: inline-block;margin-left: 5px;margin-right: 0px;">from'+dateInput(item, sub_i, 'bought', false)+'</h6>'+
                 (subItem.opened != null ? 
