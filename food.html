@@ -181,7 +181,7 @@
     var editMode = 'remove';
 
     var cleanNumber = function(num) {
-      return num - num % 0.01;
+      return Math.round(num * 100) / 100; // Round to closest 0.01
     };
 
     var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
