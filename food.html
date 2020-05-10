@@ -707,6 +707,17 @@
       }));
     };
 
+    var historyDateInput = function(historyIndex) {
+      var historyDate = new Date(mealHistory[historyIndex].date);
+      var dateText = (historyDate.getMonth()+1)+'/'+(historyDate.getDate());
+
+      return '<span data-historyIndex="'+historyIndex+'"><input type="text"'+
+        'data-date-format="mm/dd" data-language="en" '+
+        'class="history-datepicker-here" '+
+        'data-position="bottom left" '+
+        'style="width: 0px; visibility: hidden; display: inline-block;" autocomplete="off" aria-autocomplete="list"><span class="historyDateInput">'+dateText+'</span></span>';
+    };
+
     var dateInput = function(foodItem, subIndex, type, isRight) {
       var item = foodItem;
       var subItem = item.items[subIndex];
@@ -770,6 +781,7 @@
 
       $('#groceryList, #addGrocerySection').toggle(groceryMode == 'buy')
       $('#goalList, #addGoalSection').toggle(groceryMode == 'goals');
+      $('#historyList').toggle(groceryMode == 'history');
 
       if (tab == 'food') {
 
@@ -1011,7 +1023,7 @@
 
       if (tab == 'grocery') {
 
-        $('#groceryList, #goalList').empty();
+        $('#groceryList, #goalLis, #historyList').empty();
           
         var groceryList = {}; // key == store, value = {'fId'}
 
@@ -1035,6 +1047,97 @@
             if (groceryList[fItem.store][fItem.id] == null) groceryList[fItem.store][fItem.id] = 0;
             groceryList[fItem.store][fItem.id] += item.stock * item.food[fId];    
           }
+        });
+
+        mealHistory = _.sortBy(mealHistory, function(historyItem) {
+          return historyItem.date;
+        });
+
+        var dateTotal = 0;
+        var lastDate = null;
+        mealHistory.map(function(historyItem, h_i) {
+          var totalCost = 0;
+          var foodHTML = keys(historyItem.food).map(function(fId) {
+            var foodItem = food[fId];
+            if (foodItem == null) return '';
+
+            if (foodItem.cost != null) totalCost += historyItem.food[fId] * foodItem.cost / (foodItem.packAmount != null ? foodItem.packAmount : 1);
+
+            return ''+
+            '<div data-id="'+fId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
+              '<span class="icon-remove removeHistoryFood" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;">'+
+              '</span>'+
+              '<input class="form-control amountHistoryFood" style="display: inline-block; width: 90px; height: 35px; margin-right: 0px;" value="'+cleanNumber(historyItem.food[fId])+'">'+
+              '<h6 class="foodEdit" style="display: inline-block;margin-top: 7px;vertical-align: top; margin-left: 5px;">'+foodItem.name+'</h6>'+
+            '</div>';
+          }).join('');
+
+          if (lastDate != null && lastDate != historyItem.date) {
+            var lastDateObj = new Date(lastDate);
+            $('#historyList').prepend($('<h5 style="margin-top: 30px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span></h5>'));
+            dateTotal = 0;
+          }
+          lastDate = historyItem.date;
+          if (historyItem.type == 'remove') dateTotal += cleanNumber(totalCost);
+
+          var html = ''+
+          '<div data-historyIndex="'+h_i+'" style="margin-top: 10px;">'+
+            '<h6 style="display: inline-block; margin-bottom: 0px;">'+historyDateInput(h_i)+' '+(historyItem.type == 'add' ? 'Purchased' : 'Meal')+' <span style="color: grey;">($'+cleanNumber(totalCost)+')</span></h6>'+
+            '<span class="icon-remove removeHistoryItem" style="margin-left: 10px;"></span>'+
+            '<div style="display: block;">'+
+              foodHTML+
+            '</div>'+
+          '</div>';
+          $('#historyList').prepend($(html));
+        });
+
+        $('.removeHistoryItem').unbind('click').click(function() {
+          var historyIndex = parseInt(getProp(this, 'historyIndex'));
+          mealHistory.splice(historyIndex, 1);
+          updateHistory();
+          refresh();
+        });
+
+        $('.removeHistoryFood').unbind('click').click(function() {
+          var historyIndex = parseInt(getProp(this, 'historyIndex'));
+          var fId = getProp(this, 'id');
+          var historyItem = mealHistory[historyIndex];
+          delete historyItem.food[fId];
+          updateHistory();
+          refresh();
+        });
+
+        $('.amountHistoryFood').unbind('input').on('input', function() {
+          var historyIndex = parseInt(getProp(this, 'historyIndex'));
+          var fId = getProp(this, 'id');
+          var historyItem = mealHistory[historyIndex];
+          var amount = parseFloat($(this).val());
+          if (isNaN(amount) || amount < 0) return;
+          historyItem.food[fId] = amount;
+          updateHistory();
+          refresh();
+        });
+
+        var lastDateObj = new Date(lastDate);
+        $('#historyList').prepend($('<h5 style="margin-top: 30px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span></h5>'));
+
+        $('.history-datepicker-here').datepicker({
+          language: 'en',
+          autoClose: true,
+          maxDate: new Date(),
+          onSelect: function(dateText, dateObj, e) {
+            var dateTime = dateObj.getTime();
+            var historyIndex = parseInt(getProp(arguments[2].el, 'historyIndex'));
+            var historyItem = mealHistory[historyIndex];
+            historyItem.date = dateTime;
+            updateHistory();
+            refresh();
+          }
+        });
+
+        $('.historyDateInput').unbind('click').click(function(e) {
+          var datepicker = $(this).parent().find('.history-datepicker-here').datepicker().data('datepicker');
+          datepicker.show();
         });
 
         // Remove stuff that we have
@@ -1507,6 +1610,20 @@
         <div>
         </div>
       </div>
+      <div id="historyList" style="padding-top: 5px;overflow-y: scroll;height: calc(100% - 50px);">
+        <div style="margin-top: 10px;">
+          <h6>3/4 Meal <span style="color: grey;">($5)</span></h6>
+          <div>
+            <div data-id="f63" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">  <span class="icon-remove removeMealContents" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>  <input class="form-control amountMealContents" style="display: inline-block; width: 90px; height: 35px; margin-right: 0px;" value="1">  <h6 class="foodEdit" style="display: inline-block;margin-top: 7px;vertical-align: top; margin-left: 5px;">Apple</h6></div>
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <h6>3/4 Purchase <span style="color: grey;">($5)</span></h6>
+          <div>
+            <div data-id="f63" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">  <span class="icon-remove removeMealContents" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;"></span>  <input class="form-control amountMealContents" style="display: inline-block; width: 90px; height: 35px; margin-right: 0px;" value="1">  <h6 class="foodEdit" style="display: inline-block;margin-top: 7px;vertical-align: top; margin-left: 5px;">Apple</h6></div>
+          </div>
+        </div>
+        </div>
     </div>
   </div>
 
