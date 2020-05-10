@@ -781,7 +781,7 @@
 
       $('#groceryList, #addGrocerySection').toggle(groceryMode == 'buy')
       $('#goalList, #addGoalSection').toggle(groceryMode == 'goals');
-      $('#historyList').toggle(groceryMode == 'history');
+      $('#historyList, #addCustomMeal').toggle(groceryMode == 'history');
 
       if (tab == 'food') {
 
@@ -1023,7 +1023,7 @@
 
       if (tab == 'grocery') {
 
-        $('#groceryList, #goalLis, #historyList').empty();
+        $('#groceryList, #goalList, #historyList').empty();
           
         var groceryList = {}; // key == store, value = {'fId'}
 
@@ -1602,6 +1602,7 @@
         <button type="button" data-type="goals" class="btn btn-light btn-sm groceryMode">Meal Goals</button>
         <button type="button" data-type="history" class="btn btn-light btn-sm groceryMode">History</button>
       </div>
+      <div id="addCustomMeal" class="btn btn-light btn-sm" style="display: inline-block;margin-left: 15px;"><span class="icon-plus" style="margin-right: 5px;"></span>Custom Meal</div>
       <input id="addGrocerySection" style="margin-top: 15px;" type="text" class="form-control" placeholder="Add Food">
       <div id="groceryList" style="padding-top: 0px; overflow-y: scroll; height: calc(100% - 100px); width: 100%; margin-top: 15px;"></div>
       <input id="addGoalSection" style="margin-top: 15px;" type="text" class="form-control" placeholder="Add Meals">
