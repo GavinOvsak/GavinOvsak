@@ -1112,7 +1112,7 @@
 
           if (lastDate != null && lastDate != historyItem.date) {
             var lastDateObj = new Date(lastDate);
-            $('#historyList').prepend($('<h5 style="margin-top: 30px;text-align: center;"><hr style="display: inline-block;width: 150px;vertical-align: middle;margin-right: 15px;border-width: 3px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span><hr style="display: inline-block;width: 150px;vertical-align: middle;margin-left: 15px;border-width: 3px;"></h5>'));
+            $('#historyList').prepend($('<h5 style="margin-top: 30px;text-align: center;"><hr style="max-width:30%;display: inline-block;width: 150px;vertical-align: middle;margin-right: 15px;border-width: 3px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span><hr style="max-width:30%;display: inline-block;width: 150px;vertical-align: middle;margin-left: 15px;border-width: 3px;"></h5>'));
             dateTotal = 0;
           }
           lastDate = historyItem.date;
@@ -1176,7 +1176,7 @@
 
         if (mealHistory.length > 0) {
           var lastDateObj = new Date(lastDate);
-          $('#historyList').prepend($('<h5 style="margin-top: 30px;text-align: center;"><hr style="display: inline-block;width: 150px;vertical-align: middle;margin-right: 15px;border-width: 3px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span><hr style="display: inline-block;width: 150px;vertical-align: middle;margin-left: 15px;border-width: 3px;"></h5>'));
+          $('#historyList').prepend($('<h5 style="margin-top: 30px;text-align: center;"><hr style="max-width:30%;display: inline-block;width: 150px;vertical-align: middle;margin-right: 15px;border-width: 3px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span><hr style="max-width:30%;display: inline-block;width: 150px;vertical-align: middle;margin-left: 15px;border-width: 3px;"></h5>'));
         }
 
         $('.history-datepicker-here').datepicker({
