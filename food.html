@@ -209,6 +209,10 @@
 
     var openModal = function(modalId) {
       if (editingInput) return;
+
+      if ($('#mealModal').is(':visible')) $('#mealSave').click();
+      if ($('#foodModal').is(':visible')) $('#foodSave').click();
+
       ['#editModal', '#mealModal', '#foodModal'].map(function(id) {
         if (id != modalId) $(id).modal('hide');
       });
@@ -216,6 +220,41 @@
       setTimeout(function() {
         setMaxHeight(modalId);
       }, 200);
+    };
+
+    var refreshCustomMealModal = function() {
+      $('#customMealName, #customMealCost').val('').toggleClass('is-invalid', false);
+
+      var dateText = (date.getMonth()+1)+'/'+(date.getDate());
+      $('#customMealDate').val(dateText);
+
+      $('#customMealDate').datepicker({
+        language: 'en',
+        autoClose: true,
+        maxDate: new Date()
+      });
+
+      $('#customMealSubmit').unbind('click').click(function() {
+        var customDate = new Date($('#customMealDate').val() + '/' + (date.getYear() + 1900));
+        if (customDate == 'Invalid Date') customDate = date;
+
+        var name = $('#customMealName').val().trim();
+        var cost = cleanNumber(parseFloat($('#customMealCost').val()))
+        var nameErr = name.length == 0;
+        var costErr = isNaN(cost) || cost <= 0;
+        $('#customMealName').toggleClass('is-invalid', nameErr);
+        $('#customMealCost').toggleClass('is-invalid', costErr);
+        if (nameErr || costErr) return;
+
+        mealHistory.push({
+          type: 'customMeal',
+          date: customDate.getTime(),
+          name: name,
+          cost: cost
+        });
+        refresh();
+        updateHistory();
+      });
     };
 
     var refreshFoodModal = function() {
@@ -519,12 +558,12 @@
         openModal('#foodModal');
       });
 
-      $('.amountMealContents').parent().removeClass('has-error');
+      $('.amountMealContents').removeClass('is-invalid');
       $('.amountMealContents').unbind('input').on('input', function() {
         var fId = getProp(this, 'id');
         var amount = cleanNumber(parseFloat($(this).val()))
         var isErr = isNaN(amount);
-        $(this).parent().toggleClass('has-error', isErr);
+        $(this).toggleClass('is-invalid', isErr);
         if (isErr) return;
         editMealObj.food[fId] = amount;
 
@@ -1023,6 +1062,11 @@
 
       if (tab == 'grocery') {
 
+        $('#addCustomMeal').unbind('click').click(function() {
+          refreshCustomMealModal();
+          openModal('#customMealModal');
+        })
+
         $('#groceryList, #goalList, #historyList').empty();
           
         var groceryList = {}; // key == store, value = {'fId'}
@@ -1049,28 +1093,22 @@
           }
         });
 
-        mealHistory = _.sortBy(mealHistory, function(historyItem) {
-          return historyItem.date;
-        });
+        mealHistory = _.sortBy(mealHistory, 'date');
 
         var dateTotal = 0;
         var lastDate = null;
         mealHistory.map(function(historyItem, h_i) {
           var totalCost = 0;
-          var foodHTML = keys(historyItem.food).map(function(fId) {
-            var foodItem = food[fId];
-            if (foodItem == null) return '';
 
-            if (foodItem.cost != null) totalCost += historyItem.food[fId] * foodItem.cost / (foodItem.packAmount != null ? foodItem.packAmount : 1);
-
-            return ''+
-            '<div data-id="'+fId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
-              '<span class="icon-remove removeHistoryFood" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;">'+
-              '</span>'+
-              '<input class="form-control amountHistoryFood" style="display: inline-block; width: 90px; height: 35px; margin-right: 0px;" value="'+cleanNumber(historyItem.food[fId])+'">'+
-              '<h6 class="foodEdit" style="display: inline-block;margin-top: 7px;vertical-align: top; margin-left: 5px;">'+foodItem.name+'</h6>'+
-            '</div>';
-          }).join('');
+          if (historyItem.type == 'customMeal') {
+            totalCost += cleanNumber(historyItem.cost);
+          } else {
+            var foodHTML = keys(historyItem.food).map(function(fId) {
+              var foodItem = food[fId];
+              if (foodItem == null) return '';
+              if (foodItem.cost != null) totalCost += historyItem.food[fId] * foodItem.cost / (foodItem.packAmount != null ? foodItem.packAmount : 1);
+            }).join('');
+          }
 
           if (lastDate != null && lastDate != historyItem.date) {
             var lastDateObj = new Date(lastDate);
@@ -1078,17 +1116,36 @@
             dateTotal = 0;
           }
           lastDate = historyItem.date;
-          if (historyItem.type == 'remove') dateTotal += cleanNumber(totalCost);
+          if (historyItem.type != 'add') dateTotal += cleanNumber(totalCost);
 
-          var html = ''+
-          '<div data-historyIndex="'+h_i+'" style="margin-top: 10px;">'+
-            '<h6 style="display: inline-block; margin-bottom: 0px;">'+historyDateInput(h_i)+' '+(historyItem.type == 'add' ? 'Purchased' : 'Meal')+' <span style="color: grey;">($'+cleanNumber(totalCost)+')</span></h6>'+
-            '<span class="icon-remove removeHistoryItem" style="margin-left: 10px;"></span>'+
-            '<div style="display: block;">'+
-              foodHTML+
-            '</div>'+
-          '</div>';
-          $('#historyList').prepend($(html));
+          if (historyItem.type == 'customMeal') {
+            var dateObj = new Date(historyItem.date);
+            $('#historyList').prepend($(''+
+              '<h6 data-historyIndex="'+h_i+'" style="margin-top: 15px;">'+historyDateInput(h_i)+' '+historyItem.name+
+                '<span style="color: grey; margin-left: 5px;">($'+cleanNumber(historyItem.cost)+')</span>'+
+                '<span class="icon-remove removeHistoryItem" style="margin-left: 10px;"></span>'+
+              '</h6>'));
+          } else {
+            $('#historyList').prepend($(''+
+              '<div data-historyIndex="'+h_i+'" style="margin-top: 10px;">'+
+                '<h6 style="display: inline-block; margin-bottom: 0px;">'+historyDateInput(h_i)+' '+(historyItem.type == 'add' ? 'Purchased' : 'Meal')+' <span style="color: grey;">($'+cleanNumber(totalCost)+')</span></h6>'+
+                '<span class="icon-remove removeHistoryItem" style="margin-left: 10px;"></span>'+
+                '<div style="display: block;">'+
+                  keys(historyItem.food).map(function(fId) {
+                    var foodItem = food[fId];
+                    if (foodItem == null) return '';
+                    return ''+
+                    '<div data-id="'+fId+'" style="background-color: lightgrey; padding: 5px; margin-top: 10px; border-radius: 5px;">'+
+                      '<span class="icon-remove removeHistoryFood" style="float: right; font-size: 20px; margin-top: 5px; margin-right: 10px; margin-left: 5px;">'+
+                      '</span>'+
+                      '<input class="form-control amountHistoryFood" style="display: inline-block; width: 90px; height: 35px; margin-right: 0px;" value="'+cleanNumber(historyItem.food[fId])+'">'+
+                      '<h6 class="foodEdit" style="display: inline-block;margin-top: 7px;vertical-align: top; margin-left: 5px;">'+foodItem.name+'</h6>'+
+                    '</div>';
+                  }).join('')+
+                '</div>'+
+              '</div>'));
+          }          
+          
         });
 
         $('.removeHistoryItem').unbind('click').click(function() {
@@ -1117,8 +1174,10 @@
           updateHistory();
         });
 
-        var lastDateObj = new Date(lastDate);
-        $('#historyList').prepend($('<h5 style="margin-top: 30px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span></h5>'));
+        if (mealHistory.length > 0) {
+          var lastDateObj = new Date(lastDate);
+          $('#historyList').prepend($('<h5 style="margin-top: 30px;">'+(lastDateObj.getMonth()+1)+'/'+lastDateObj.getDate()+' <span style="color: grey;">($'+cleanNumber(dateTotal)+')</span></h5>'));
+        }
 
         $('.history-datepicker-here').datepicker({
           language: 'en',
@@ -1442,6 +1501,7 @@
         food[editFoodObj.id] = editFoodObj;
         updateFood(editFoodObj.id);
         refresh();
+        refreshMealModal();
       });
 
       $('#foodDelete').unbind('click').click(function() {
@@ -1458,6 +1518,7 @@
         meals[editMealObj.id] = editMealObj;
         updateMeal(editMealObj.id);
         refresh();
+        refreshFoodModal();
       });
 
       $('#mealDelete').unbind('click').click(function() {
@@ -1586,8 +1647,8 @@
         <option value="snack">Snacks</option>
         <option value="dinner">Dinner</option>
       </select>
-      <input id="foodFilter" class="form-control" style="width: calc(100% - 75px); height: 37px; display: none;" placeholder="Filter">
-      <input id="mealFilter" class="form-control" style="width: calc(100% - 175px); height: 37px; display: none;" placeholder="Filter">
+      <input id="foodFilter" class="form-control" style="width: calc(100% - 80px); height: 37px; display: none;" placeholder="Filter">
+      <input id="mealFilter" class="form-control" style="width: calc(100% - 180px); height: 37px; display: none;" placeholder="Filter">
       <div id="newItem" class="btn btn-primary" style="height: 37px; vertical-align: top; padding-top: 4px; display: none;">New</div>
     </div>
     <div id="foodSection" style="padding-top: 10px; position: relative;height: calc(100% - 100px);display: none; width: 100%;">
@@ -1610,7 +1671,7 @@
         <div>
         </div>
       </div>
-      <div id="historyList" style="padding-top: 5px;overflow-y: scroll;height: calc(100% - 50px);">
+      <div id="historyList" style="padding-top: 0px; margin-top: 10px; overflow-y: scroll;height: calc(100% - 50px);">
         <div style="margin-top: 10px;">
           <h6>3/4 Meal <span style="color: grey;">($5)</span></h6>
           <div>
@@ -1710,19 +1771,19 @@
           </div>
           <div style="margin-top: 10px;">
             <div style="display: inline-block;margin-right: 10px;">
-              <input class="mealTypeCheck" data-type="breakfast" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <input class="mealTypeCheck" data-type="breakfast" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox">
               <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Breakfast</h6>
             </div>
             <div style="display: inline-block;margin-right: 10px;">
-              <input class="mealTypeCheck" data-type="lunch" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <input class="mealTypeCheck" data-type="lunch" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox">
               <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Lunch</h6>
             </div>
             <div style="display: inline-block;margin-right: 10px;">
-              <input class="mealTypeCheck" data-type="dinner" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <input class="mealTypeCheck" data-type="dinner" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox">
               <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Dinner</h6>
             </div>
             <div style="display: inline-block;margin-right: 10px;">
-              <input class="mealTypeCheck" data-type="snack" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox" class="">
+              <input class="mealTypeCheck" data-type="snack" placeholder="None" style="display: inline-block;  margin-top: 10px;" type="checkbox">
               <h6 style="display: inline-block; margin-left: 5px; vertical-align: top; margin-top: 5px;">Snack</h6>
             </div>
           </div>
@@ -1764,6 +1825,34 @@
           </div>
           <div id="editSubmit" class="btn btn-sm btn-primary" style="float: right;">Save</div>
           <div id="editClear" class="btn btn-sm btn-light" style="float: right;">Clear</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="customMealModal" class="modal fade in" role="dialog" style="overflow-x: scroll; overflow-y: hidden">
+    <div class="modal-dialog" style="min-width: 300px; margin-top: 15px; overflow-y: initial !important;">
+      <div class="modal-content">
+        <div class="modal-header" style="">
+          <h5 style="margin-top: 0px; margin-bottom: 0px; float: left;">Custom Meal <span style="color: grey">(Ordering In, etc)</span></h5>
+          <span class="icon-remove" style="float: right; font-size: 22px;" data-dismiss="modal"></span>
+        </div>
+        <div class="modal-body" style="width: 100%; margin-bottom: 0px; overflow-y: scroll; max-height: 630px; font-size: 15px; user-select: text;padding-top: 0px;">
+          <div style="display: inline-block;margin-right: 10px;width: 100%;margin-top: 10px;">
+            <h6 style="display: inline-block;  vertical-align: top; margin-top: 8px;margin-right: 5px;margin-bottom: 10px;">Meal:</h6>
+            <input id="customMealName" class="form-control" style="display: inline-block;  width: calc(100% - 60px);height: 38px;vertical-align: top;" placeholder="Name">
+          </div>
+          <div style="display: inline-block;margin-right: 10px;width: 100%;margin-top: 10px;">
+            <h6 style="display: inline-block;  vertical-align: top; margin-top: 8px;margin-right: 5px;">Cost:</h6>
+            <input id="customMealCost" class="form-control" style="display: inline-block;  width: 80px;height: 38px;vertical-align: top;" placeholder="$">
+          </div>
+        </div>
+        <div class="modal-footer" style="text-align: left; display: inline-block;">
+          <input id="customMealDate" class="form-control" style="display: inline-block; width: 65px; height: 31px; vertical-align: top; padding-left: 10px; padding-right: 5px;"
+            data-date-format="m/d" data-language="en" 
+            class="custom-datepicker-here" autocomplete="off" 
+            data-position="top left" >
+          <div id="customMealSubmit" class="btn btn-sm btn-primary" style="float: right;">Save</div>
         </div>
       </div>
     </div>
