@@ -458,9 +458,11 @@
 
           if (subItem.opened != null && subItem.opened < subItem.bought) delete subItem.opened;
 
-          editFoodObj.items = _.sortBy(editFoodObj.items, function(subItem) {
+          editFoodObj.items = _.orderBy(editFoodObj.items, [function(subItem) {
             return getSubItemDaysToExpire(subItem, editFoodObj);
-          });
+          }, function(subItem) {
+            return subItem.bought;
+          }]);
           refreshFoodModal();
         }
       });
@@ -964,9 +966,12 @@
 
             if (subItem.opened != null && subItem.opened < subItem.bought) delete subItem.opened;
 
-            food[fId].items = _.sortBy(food[fId].items, function(subItem) {
+            food[fId].items = _.orderBy(food[fId].items, [function(subItem) {
               return getSubItemDaysToExpire(subItem, food[fId]);
-            });
+            }, function(subItem) {
+              return subItem.bought;
+            }]);
+
             updateFood(fId);
             refresh();
           }
