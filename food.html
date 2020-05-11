@@ -1171,6 +1171,7 @@
           var fId = getProp(this, 'id');
           var historyItem = mealHistory[historyIndex];
           delete historyItem.food[fId];
+          if (empty(historyItem.food)) mealHistory.splice(historyIndex, 1);
           updateHistory();
           refresh();
         });
